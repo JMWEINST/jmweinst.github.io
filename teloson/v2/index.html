@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teloson</title>
+<meta name="description" content="Teloson builds private AI trading floors for one client at a time. Seventy-four agents on your own Mac, installed in one step, and nothing trades without your approval.">
+<meta property="og:title" content="Teloson">
+<meta property="og:description" content="A trading floor of your own. Installed on your Mac in one step. Nothing trades without your approval.">
+<meta property="og:image" content="https://jmweinst.github.io/teloson/assets/teloson-og.jpg">
+<meta name="theme-color" content="#0F1A2E">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --navy:#1C2B45; --deep:#0F1A2E; --night:#0A1222; --signal:#4F76B0; --signal-light:#8AA8D8; --paper:#FBFAF7; --sand:#F3F1EC;
+  --ink:#1C2B45; --ink-2:#4B5669; --ink-3:#7E8798; --line:rgba(28,43,69,.12); --line-2:rgba(28,43,69,.24);
+  --up:#2E9E5B; --dn:#D25B4D; --amber:#D99A2B;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",Menlo,monospace;
+  --wrap:1180px; --gutter:clamp(20px,5vw,56px); --r:22px; --ease:cubic-bezier(.23,1,.32,1);
+  --bar:var(--paper); --bar-accent:var(--signal-light);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--sand);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+p{margin:0 0 1.2em}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;line-height:1.02;margin:0;text-wrap:balance}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.lockup{display:block;height:26px;width:105.4px}
+.brand{display:inline-flex;align-items:center;color:var(--bar)}
+:focus-visible{outline:2px solid var(--signal);outline-offset:4px;border-radius:4px}
+::selection{background:rgba(79,118,176,.25)}
+
+/* buttons */
+.pill{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;font:inherit;font-size:14px;font-weight:500;letter-spacing:.01em;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:transform 160ms var(--ease),background 150ms ease,border-color 150ms ease,color 150ms ease}
+.pill:active{transform:scale(.97)}
+.pill.paper{background:var(--paper);color:var(--navy)}
+.pill.ghost{background:rgba(251,250,247,.08);color:var(--paper);border-color:rgba(251,250,247,.18)}
+.pill.navy{background:var(--navy);color:var(--paper)}
+.pill.light{background:#fff;color:var(--navy);border-color:var(--line-2)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--signal-light)}
+.pill.navy .dot,.pill.light .dot{background:var(--signal)}
+@media (hover:hover) and (pointer:fine){
+  .pill.paper:hover{background:#fff}
+  .pill.ghost:hover{background:rgba(251,250,247,.14);border-color:rgba(251,250,247,.3)}
+  .pill.navy:hover{background:#243756}
+  .pill.light:hover{border-color:var(--signal);background:#fff}
+}
+.quiet{font-size:14px;font-weight:500;color:var(--ink-2);border-bottom:1px solid var(--line-2);padding-bottom:2px;transition:color 150ms ease,border-color 150ms ease}
+.dark .quiet{color:rgba(251,250,247,.72);border-color:rgba(251,250,247,.3)}
+@media (hover:hover) and (pointer:fine){.quiet:hover{color:var(--signal);border-color:var(--signal)}}
+
+/* header */
+.top{position:absolute;inset:0 0 auto 0;z-index:20;padding:22px 0}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.top nav{display:flex;align-items:center;gap:24px}
+.top .link{font-size:14px;font-weight:500;color:rgba(251,250,247,.7);transition:color 150ms ease}
+@media (hover:hover) and (pointer:fine){.top .link:hover{color:var(--paper)}}
+.top .pill{height:40px;padding:0 16px;font-size:13.5px}
+
+/* hero */
+.hero{position:relative;background:radial-gradient(60% 50% at 50% 62%,rgba(79,118,176,.55),rgba(79,118,176,0) 70%),radial-gradient(40% 30% at 50% 38%,rgba(138,168,216,.22),rgba(138,168,216,0) 70%),linear-gradient(180deg,var(--night) 0%,var(--deep) 55%,var(--navy) 100%);color:var(--paper);padding:150px 0 0;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(251,250,247,.35) .6px,transparent .8px);background-size:34px 34px;opacity:.35;mask-image:radial-gradient(70% 60% at 50% 45%,#000,transparent);-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000,transparent)}
+.hero .wrap{position:relative;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(251,250,247,.6);margin:0 0 26px}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--signal-light);box-shadow:0 0 12px var(--signal-light)}
+.hero h1{font-size:clamp(46px,6.6vw,96px);max-width:21ch;margin-inline:auto}
+.hero h1 .glow{background:linear-gradient(92deg,#c8d8f6 0%,#8AA8D8 45%,#dfe8ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lede{font-size:clamp(16px,1.35vw,19px);line-height:1.55;color:rgba(251,250,247,.72);max-width:44ch;margin:26px auto 34px}
+.hero .cta{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap}
+.hero .quiet{color:rgba(251,250,247,.72);border-color:rgba(251,250,247,.3)}
+.hero .stage{position:relative;margin:64px auto 0;max-width:1200px;padding-inline:var(--gutter)}
+/* the mac */
+.mac{position:relative;z-index:2;margin-inline:auto;width:100%;max-width:880px}
+.mac .lid{background:#0b0f16;border-radius:22px;padding:12px 12px 14px;box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06) inset,0 0 80px rgba(79,118,176,.25)}
+.mac .screen{position:relative;background:#0d1117;border-radius:12px;overflow:hidden;aspect-ratio:1180/720}
+.mac .base{height:14px;margin:0 -2% 0;background:linear-gradient(180deg,#1a2130,#0b0f16);border-radius:0 0 18px 18px;position:relative}
+.mac .base::after{content:"";position:absolute;left:50%;top:0;width:14%;height:5px;transform:translateX(-50%);background:#05070c;border-radius:0 0 6px 6px}
+/* cards floating around the mac, faded like things seen out of the corner of the eye */
+.float{position:absolute;z-index:1;width:232px;padding:14px 16px;border-radius:16px;background:rgba(251,250,247,.06);border:1px solid rgba(251,250,247,.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:rgba(251,250,247,.8);font-size:12.5px;line-height:1.45;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.25);opacity:.9}
+.float b{display:block;font-weight:600;color:var(--paper);margin-bottom:4px}
+.float .app{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(251,250,247,.55);margin-bottom:8px}
+.float .app i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.float .app i.wa{background:#25D366}.float .app i.tg{background:#2AABEE}.float .app i.im{background:#34C759}.float .app i.mail{background:#8AA8D8}
+.float .num{font-family:var(--mono);font-size:13px;color:var(--paper)}
+.f1{left:-56px;top:4%}.f2{right:-60px;top:0}.f3{left:-36px;bottom:44%}.f4{right:-48px;bottom:48%}
+.f1{transform:rotate(-2deg)}.f2{transform:rotate(2deg)}.f4{transform:rotate(-1.5deg)}
+.hero .fade{position:absolute;left:0;right:0;bottom:0;height:34%;background:var(--sand);border-radius:40px 40px 0 0;z-index:0}
+@media (max-width:720px){.top .link,.top .pill.ghost{display:none}.top nav{gap:12px}}
+html,body{overflow-x:clip}
+@media (max-width:900px){.float{display:none}.hero{padding-top:120px}.hero .stage{margin-top:44px;padding-inline:12px}.mac .lid{border-radius:14px;padding:6px 6px 8px}.mac .screen{border-radius:8px}}
+
+/* the desk ui, built at 1180×720 and scaled to fit */
+.desk{position:absolute;left:0;top:0;width:1180px;height:750px;transform-origin:0 0;background:#0d1117;color:#e6edf3;font-family:var(--sans);font-size:15px;line-height:1.4;display:grid;grid-template-rows:52px 1fr;--panel:#161b22;--panel2:#1b222c;--line:#2a313c;--ink2:#9aa5b1;--ink3:#8b93a1;--accent:#4d8bff;--up:#3fb950;--dn:#f85149;--amber:#e3a008;--teal:#2dd4bf}
+.desk .top{position:static;display:flex;align-items:center;gap:22px;padding:0 18px;border-bottom:1px solid var(--line);background:#0d1117}
+.desk .brandname{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;letter-spacing:.12em;font-weight:500}
+.desk .brandname i{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up)}
+.desk .stat .l{font-size:11.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em}
+.desk .stat .v{font-family:var(--mono);font-size:16px}
+.desk .mkt{display:flex;gap:6px;margin-left:8px}
+.desk .mkt span{font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink2)}
+.desk .mkt span.on{border-color:rgba(63,185,80,.5);color:var(--up)}
+.desk .mode{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px}
+.desk .mode span{padding:5px 11px;color:var(--ink3)}
+.desk .mode span.on{background:var(--panel2);color:#e6edf3}
+.desk .body{display:grid;grid-template-columns:184px 1fr 338px;min-height:0}
+.desk .side{border-right:1px solid var(--line);padding:14px 10px;background:#0d1117}
+.desk .grp{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:8px 10px 4px}
+.desk .nav{padding:7px 10px;border-radius:7px;color:var(--ink2);font-size:14px}
+.desk .nav.on{background:var(--panel2);color:#e6edf3}
+.desk .nav.propose{margin-top:14px;background:#152238;color:#9cc0ff;font-weight:500}
+.desk .main{padding:14px;display:grid;grid-template-rows:1fr auto;gap:10px;min-height:0}
+.ui .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.ui .card.amber{border-left:4px solid var(--amber)}
+.ui .card.blue{border-left:4px solid var(--accent)}
+.ui .hd{display:flex;align-items:baseline;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)}
+.ui .hd h3{font:600 15px var(--sans);letter-spacing:0;color:#e6edf3}
+.ui .hd .rt{font-size:12.5px;color:var(--ink3)}
+.ui .bd{padding:10px 14px;overflow:hidden;flex:1;min-height:0}
+.ui .chat{display:flex;flex-direction:column;gap:8px;justify-content:flex-end;height:100%}
+.ui .msg{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;animation:msgin 260ms var(--ease) both}
+@keyframes msgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ui .av{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:500;color:#0d1117}
+.ui .av.data{background:#2dd4bf}.ui .av.val{background:#a371f7}.ui .av.risk{background:#f85149}.ui .av.pm{background:#4d8bff}.ui .av.exec{background:#e3a008}.ui .av.tl{background:#e6edf3}
+.ui .who{font-size:13px;color:var(--ink2);margin-bottom:2px}.ui .who b{color:#e6edf3;font-weight:600}.ui .who span{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-left:6px}
+.ui .txt{font-size:14.5px;color:#d5dbe4}
+.ui .txt em{font-style:normal;color:var(--up);font-family:var(--mono);font-size:12.5px}
+.ui .txt em.no{color:var(--dn)}
+.ui .composer{display:flex;gap:8px}
+.ui .composer div{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--ink3);font-size:13.5px;background:#0d1117}
+.ui .composer span{padding:8px 14px;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:500}
+.desk .right{padding:14px 14px 14px 0;display:flex;flex-direction:column;gap:10px;min-height:0}
+.ui .plan{padding:12px 14px}
+.ui .plan .t{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:15px}
+.ui .plan .t b{font-weight:500}
+.ui .plan .t i{font-style:normal;color:var(--amber)}
+.ui .plan .d{font-size:13.5px;color:var(--ink2);margin:6px 0 10px;line-height:1.5}
+.ui .plan .btns{display:flex;gap:8px}
+.ui .plan .btns span{flex:1;text-align:center;padding:9px 0;border-radius:8px;font-size:13.5px;font-weight:600}
+.ui .plan .ok{background:var(--up);color:#06110a}.ui .plan .rj{border:1px solid var(--line);color:var(--ink2)}
+.ui .plan.empty{color:var(--ink3);font-size:13.5px}
+.ui .lim{display:grid;grid-template-columns:1fr auto auto;gap:5px 14px;font-size:13.5px;padding:8px 14px}
+.ui .lim .h{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding-bottom:4px;border-bottom:1px solid var(--line)}
+.ui .lim .n{font-family:var(--mono);color:#e6edf3}
+.ui .lim .n.ok{color:var(--up)}
+.ui .al{padding:10px 14px;display:flex;flex-direction:column;gap:8px;font-size:13.5px}
+.ui .al div{display:grid;grid-template-columns:44px 1fr;gap:10px}
+.ui .al span{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.ui .al i{font-style:normal;color:var(--ink2)}
+.ui .al i b{font-weight:500;color:#e6edf3}
+
+
+/* photos with the live ui mapped onto their screens */
+.shot{position:relative;overflow:hidden;border-radius:16px;background:#0d1117}
+.shot img{display:block;width:100%;height:auto}
+.shot .plane{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+.shot .plane > *{position:absolute;left:0;top:0;transform-origin:0 0}
+.hero .shot{overflow:visible;border-radius:0;background:transparent}
+.hero .shot img{filter:drop-shadow(0 50px 90px rgba(0,0,0,.65)) drop-shadow(0 0 60px rgba(79,118,176,.25))}
+.feature .vis.shot{min-height:0;background:#0d1117}
+.lock{width:390px;height:844px;background:radial-gradient(70% 45% at 50% 28%,rgba(79,118,176,.6),rgba(79,118,176,0) 70%),linear-gradient(180deg,#101b30,#0a1222);color:#fff;font-family:var(--sans);padding:70px 14px 0;border-radius:46px;overflow:hidden}
+.lock .time{font-size:84px;font-weight:300;letter-spacing:-.02em;text-align:center;line-height:1}
+.lock .date{text-align:center;font-size:17px;opacity:.85;margin:8px 0 36px}
+.noti{display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 14px;border-radius:24px;background:rgba(255,255,255,.22);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin-bottom:10px;font-size:15px;line-height:1.3;animation:toastin 320ms var(--ease) both}
+.noti i{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font:600 11px var(--mono);color:#fff}
+.noti i.wa{background:#25D366}.noti i.tg{background:#2AABEE}.noti i.im{background:#34C759}.noti i.mail{background:#4F76B0}
+.noti .h{display:flex;justify-content:space-between;font-size:12.5px;opacity:.8;letter-spacing:.02em;margin-bottom:2px}
+.noti b{display:block;font-weight:600}
+.ui .lim.big{font-size:14px;padding:12px 16px;gap:8px 20px}
+.ui .log{padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink2);display:flex;flex-direction:column;gap:6px}
+.ui .log span{font-family:var(--mono);color:var(--ink3);margin-right:10px}
+
+
+/* app icons: WhatsApp and Telegram are the official marks from their brand pages; the other two are plain glyphs */
+.ai{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;flex:none}
+.ai img,.ai svg{width:26px;height:26px;display:block}
+.ai.wa{background:#fff}.ai.tg{background:transparent}.ai.tg img{width:40px;height:40px}.ai.im{background:#34C759}.ai.mail{background:#4F76B0}
+.ai.mail svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ai.im svg{width:24px;height:24px;fill:#fff}
+.float .ai{width:22px;height:22px;border-radius:6px}.float .ai img{width:15px;height:15px}.float .ai.tg img{width:22px;height:22px}.float .ai svg{width:13px;height:13px}
+/* the panels in the feature cards, drawn at reading size on navy */
+.panel{position:relative;min-height:440px;border-radius:16px;overflow:hidden;background:radial-gradient(90% 70% at 20% 0%,rgba(79,118,176,.45),rgba(79,118,176,0) 60%),linear-gradient(165deg,#22334f,#0F1A2E 70%);display:grid;place-items:center;padding:28px}
+.panel .ui{width:100%;max-width:520px;border-radius:14px;color:#e6edf3;box-shadow:0 30px 70px rgba(0,0,0,.45);font-size:15px;--panel:#161b22;--panel2:#1b222c;--line:#2a313c;--ink2:#9aa5b1;--ink3:#8b93a1;--accent:#4d8bff;--up:#3fb950;--dn:#f85149;--amber:#e3a008}
+.panel .ui .hd{padding:14px 18px}.panel .ui .hd h3{font-size:15px}.panel .ui .hd .rt{font-size:12.5px}
+.panel .ui .bd{padding:14px 18px}
+.panel .ui .msg{grid-template-columns:34px 1fr;gap:12px}.panel .ui .av{width:34px;height:34px;font-size:11px}
+.panel .ui .who{font-size:13.5px}.panel .ui .who span{font-size:11px}.panel .ui .txt{font-size:15px}.panel .ui .txt em{font-size:13px}
+.panel .ui .chat{gap:12px}
+.panel .ui .lim{font-size:15px;padding:12px 18px;gap:9px 22px}.panel .ui .lim .h{font-size:11px}
+.panel .ui .log{font-size:13.5px;padding:14px 18px;gap:8px}
+.phone{width:300px;background:#0b0f16;border-radius:48px;padding:11px;box-shadow:0 34px 70px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08) inset}
+.phone .scr{position:relative;height:585px;border-radius:38px;overflow:hidden;background:radial-gradient(70% 45% at 50% 25%,rgba(79,118,176,.6),rgba(79,118,176,0) 70%),linear-gradient(180deg,#14213a,#0a1222);color:#fff;padding:64px 10px 0}
+.phone .notch{position:absolute;left:50%;top:11px;transform:translateX(-50%);width:104px;height:30px;border-radius:20px;background:#0b0f16}
+.phone .time{font-size:66px;font-weight:300;letter-spacing:-.02em;text-align:center;line-height:1}
+.phone .date{text-align:center;font-size:14px;opacity:.85;margin:6px 0 22px}
+.phone .noti{grid-template-columns:40px 1fr;padding:10px 12px;border-radius:20px;font-size:13px;margin-bottom:8px;line-height:1.28}
+.phone .noti .h{font-size:11.5px}
+@media (max-width:900px){.panel{min-height:0;padding:18px}.panel .ui{font-size:14px}.phone{width:270px}.phone .scr{height:500px}}
+
+
+/* a presentation cut of the desk for photos: the chat alone, at big type */
+.desk.bigchat{grid-template-rows:64px 1fr}
+.desk.bigchat .top{padding:0 26px}.desk.bigchat .brandname{font-size:18px}.desk.bigchat .stat .l{font-size:14px}.desk.bigchat .stat .v{font-size:21px}.desk.bigchat .mkt span{font-size:15px;padding:5px 12px}.desk.bigchat .mode{font-size:17px}.desk.bigchat .mode span{padding:8px 16px}
+.desk.bigchat .body1{padding:26px;min-height:0;display:grid}
+.desk.bigchat .card{border-radius:16px}
+.desk.bigchat .hd{padding:18px 26px}.desk.bigchat .hd h3{font-size:24px}.desk.bigchat .hd .rt{font-size:18px}
+.desk.bigchat .bd{padding:22px 26px}.desk.bigchat .chat{gap:20px}
+.desk.bigchat .msg{grid-template-columns:54px 1fr;gap:18px}.desk.bigchat .av{width:54px;height:54px;border-radius:12px;font-size:19px}
+.desk.bigchat .who{font-size:21px;margin-bottom:4px}.desk.bigchat .who span{font-size:16px;margin-left:10px}.desk.bigchat .txt{font-size:26px;line-height:1.35}.desk.bigchat .txt em{font-size:21px}
+/* built on real things */
+.built{padding:0 0 clamp(72px,9vw,120px)}
+.built .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);text-align:center;margin:0 0 26px}
+.marks{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 12px}
+.mark{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 16px 0 12px;border-radius:999px;background:#fff;box-shadow:0 1px 0 rgba(28,43,69,.04),0 8px 26px rgba(28,43,69,.06);font-size:13.5px;font-weight:500;color:var(--ink)}
+.mark svg{width:20px;height:20px;fill:var(--navy);flex:none}
+.mark small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-left:2px}
+.mark.word{font-family:var(--serif);font-size:18px;letter-spacing:-.01em;padding-left:16px}
+.mark.word.mono{font-family:var(--mono);font-size:13px;letter-spacing:.04em}
+.runs{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(251,250,247,.6);margin-top:14px}
+.runs svg{width:14px;height:14px;fill:rgba(251,250,247,.75)}
+
+/* page sections */
+section.block{padding:clamp(72px,9vw,120px) 0}
+.hook{text-align:center}
+.hook h2{font-size:clamp(36px,4.6vw,64px);max-width:20ch;margin:0 auto 22px}
+.hook p{font-size:clamp(16px,1.3vw,19px);color:var(--ink-2);max-width:52ch;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.stats div{background:#fff;border-radius:var(--r);padding:26px 24px;box-shadow:0 1px 0 rgba(28,43,69,.04),0 12px 40px rgba(28,43,69,.06)}
+.stats b{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(40px,4vw,56px);line-height:1;margin-bottom:8px}
+.stats span{font-size:14px;color:var(--ink-2)}
+@media (max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+
+/* feature cards */
+.feature{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;background:#fff;border-radius:var(--r);padding:16px;margin-bottom:22px;box-shadow:0 1px 0 rgba(28,43,69,.04),0 16px 50px rgba(28,43,69,.07)}
+.feature .vis{position:relative;min-height:380px;border-radius:16px;overflow:hidden;background:radial-gradient(80% 70% at 30% 20%,rgba(138,168,216,.55),rgba(138,168,216,0) 70%),linear-gradient(160deg,var(--navy),var(--night))}
+.feature .vis .desk{position:absolute;left:0;top:0}
+.feature .copy{display:flex;flex-direction:column;padding:22px 26px 22px 6px}
+.feature h3{font-size:clamp(30px,3vw,42px);margin-bottom:14px}
+.feature p{font-size:16px;color:var(--ink-2);max-width:40ch}
+.feature .foot{margin-top:auto;display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2);padding-top:26px}
+.feature .foot i{width:22px;height:22px;border-radius:7px;background:rgba(79,118,176,.12);display:grid;place-items:center;color:var(--signal)}
+.feature .foot i svg{width:13px;height:13px}
+@media (max-width:900px){.feature{grid-template-columns:1fr}.feature .copy{padding:8px 10px 14px}.feature .vis{min-height:300px}.feature.tall .vis{min-height:420px}.mini.amber{width:80%!important}.toasts{width:78%;bottom:5%}}
+/* mini mockups inside the feature visuals */
+.mini{position:absolute;left:8%;top:9%;width:84%;background:var(--panel,#161b22);color:#e6edf3;border-radius:12px;box-shadow:0 30px 60px rgba(0,0,0,.4);font-family:var(--sans);font-size:13px;overflow:hidden;--panel:#161b22;--panel2:#1b222c;--line:#2a313c;--ink2:#9aa5b1;--ink3:#8b93a1;--accent:#4d8bff;--up:#3fb950;--dn:#f85149;--amber:#e3a008}
+.mini.right{left:auto;right:6%;top:10%;width:66%}
+.mini .hd{display:flex;justify-content:space-between;align-items:baseline;padding:11px 16px;border-bottom:1px solid var(--line)}
+.mini .hd h4{margin:0;font:600 13.5px var(--sans);color:#e6edf3}
+.mini .plan .btns span{padding:10px 0}
+.mini .hd span{font-size:11px;color:var(--ink3)}
+.mini.amber{border-left:4px solid var(--amber)}.mini.blue{border-left:4px solid var(--accent)}
+.mini .desk-chat{position:static;width:auto;height:auto;transform:none;display:block;background:transparent}
+.toasts{position:absolute;right:6%;bottom:8%;width:60%;display:flex;flex-direction:column;gap:8px}
+.toast{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;padding:8px 11px;border-radius:13px;background:rgba(251,250,247,.94);color:var(--ink);font-size:12px;line-height:1.35;box-shadow:0 12px 30px rgba(0,0,0,.35);animation:toastin 320ms var(--ease) both}
+.toast i{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-size:9px;font-weight:500}
+.toast i.wa{background:#25D366}.toast i.tg{background:#2AABEE}.toast i.im{background:#34C759}.toast i.mail{background:var(--signal)}
+.toast b{display:inline;font-weight:600;font-size:12px;margin-right:6px}
+.toast small{color:var(--ink-3);font-size:11px}
+@keyframes toastin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* the strip */
+.more h2{font-size:clamp(34px,4vw,54px);margin-bottom:34px}
+.strip{display:flex;gap:18px;overflow-x:auto;padding:4px var(--gutter) 24px;margin-inline:calc(var(--gutter) * -1);scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.tile{flex:0 0 260px;scroll-snap-align:start}
+.tile .art{height:190px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(160deg,var(--navy),var(--night));box-shadow:0 12px 34px rgba(28,43,69,.12)}
+.tile h4{font:500 16px var(--sans);margin:14px 0 2px}
+.tile p{font-size:13.5px;color:var(--ink-3);margin:0}
+.art .win{position:absolute;inset:16px 16px auto 16px;background:#161b22;border-radius:10px;padding:12px;color:#e6edf3;font-size:11px;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.art .row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #2a313c;font-family:var(--mono);font-size:10.5px;color:#9aa5b1;white-space:nowrap}
+.art .row b{overflow:hidden;text-overflow:ellipsis}
+.art .row b{color:#e6edf3;font-weight:500}.art .row .u{color:#3fb950}.art .row .d{color:#f85149}
+.art .bar{height:6px;border-radius:3px;background:#2a313c;overflow:hidden;margin:6px 0}
+.art .bar i{display:block;height:100%;background:#4d8bff}
+.art .seats{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:8px}
+.art .seats i{aspect-ratio:1;border-radius:3px;background:#2a313c}
+.art .seats i.on{background:#4d8bff;box-shadow:0 0 8px rgba(77,139,255,.7)}
+.art .seats i.veto{background:#f85149}
+.art svg{width:100%;height:80px;display:block}
+.art .tag{position:absolute;left:16px;bottom:14px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(251,250,247,.6)}
+
+/* the bad day */
+.sim{background:#fff;border-radius:var(--r);padding:clamp(22px,3vw,40px);box-shadow:0 1px 0 rgba(28,43,69,.04),0 16px 50px rgba(28,43,69,.07);display:grid;grid-template-columns:1fr 1.35fr;gap:36px}
+.sim h2{font-size:clamp(34px,3.8vw,52px);margin-bottom:14px}
+.sim .lead{color:var(--ink-2);font-size:15.5px;max-width:38ch}
+.ctl{margin-top:26px}
+.ctl label{display:flex;justify-content:space-between;font-size:13px;font-weight:500;margin-bottom:8px}
+.ctl label span{font-family:var(--mono);color:var(--signal)}
+.seg{display:flex;gap:6px;margin-bottom:20px}
+.seg button{flex:1;height:38px;border-radius:10px;border:1px solid var(--line-2);background:transparent;font:inherit;font-size:13.5px;color:var(--ink-2);cursor:pointer;transition:background 150ms ease,color 150ms ease,border-color 150ms ease,transform 160ms var(--ease)}
+.seg button:active{transform:scale(.97)}
+.seg button.on{background:var(--navy);color:var(--paper);border-color:var(--navy)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer;transition:background 150ms ease,border-color 150ms ease,color 150ms ease}
+.chips button .ai{width:22px;height:22px;border-radius:6px}.chips button .ai img{width:15px;height:15px}.chips button .ai.tg img{width:22px;height:22px}.chips button .ai svg{width:13px;height:13px}
+.chips button.on{border-color:var(--navy);color:var(--navy);background:rgba(28,43,69,.05)}
+.chart{position:relative;background:var(--sand);border-radius:16px;padding:18px 18px 10px}
+.chart svg{width:100%;height:auto;display:block}
+.chart .ax{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+.timeline{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.timeline li{display:grid;grid-template-columns:54px 1fr;gap:12px;font-size:14px;color:var(--ink-2);opacity:0;transform:translateY(4px);animation:ev 260ms var(--ease) forwards}
+.timeline li time{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);padding-top:2px}
+.timeline li b{font-weight:600;color:var(--ink)}
+.timeline li.halt b{color:var(--dn)}.timeline li.warn b{color:var(--amber)}.timeline li.ok b{color:var(--up)}
+@keyframes ev{to{opacity:1;transform:none}}
+@media (max-width:900px){.sim{grid-template-columns:1fr}}
+
+/* capture pill */
+.capture{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#E7EDF7;border-radius:999px;padding:14px 14px 14px 30px;margin-top:22px}
+.capture p{margin:0;font-size:17px;font-weight:500}
+.capture form{display:flex;gap:8px;background:#fff;border-radius:999px;padding:6px 6px 6px 18px;min-width:min(420px,100%)}
+.capture input{border:0;background:transparent;font:inherit;font-size:14px;flex:1;min-width:0;outline:none;color:var(--ink)}
+@media (max-width:760px){.capture{flex-direction:column;align-items:stretch;border-radius:28px;padding:22px}.capture form{min-width:0}}
+
+/* trust */
+.trust h2{font-size:clamp(34px,4.2vw,56px);text-align:center;max-width:22ch;margin:0 auto 44px}
+.trust h2 .k{display:inline-block;padding:0 .12em;border-radius:.2em;background:rgba(79,118,176,.16)}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tgrid div{background:#fff;border-radius:18px;padding:26px 24px 24px;box-shadow:0 1px 0 rgba(28,43,69,.04),0 12px 40px rgba(28,43,69,.06)}
+.tgrid i{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(79,118,176,.12);color:var(--signal);margin-bottom:64px}
+.tgrid i svg{width:18px;height:18px}
+.tgrid b{display:block;font-weight:600;font-size:15px;margin-bottom:6px}
+.tgrid p{font-size:14px;color:var(--ink-2);margin:0}
+@media (max-width:900px){.tgrid{grid-template-columns:1fr 1fr}.tgrid i{margin-bottom:28px}}
+@media (max-width:560px){.tgrid{grid-template-columns:1fr}}
+
+/* straight talk */
+.talk{background:#fff;border-radius:var(--r);padding:clamp(28px,4vw,56px);box-shadow:0 1px 0 rgba(28,43,69,.04),0 16px 50px rgba(28,43,69,.07);display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.talk h2{font-size:clamp(34px,3.8vw,52px);margin-bottom:18px}
+.talk p{color:var(--ink-2);font-size:15.5px;max-width:46ch}
+.talk .nums{display:grid;gap:14px}
+.talk .nums div{border-top:1px solid var(--line);padding:16px 0 4px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:baseline}
+.talk .nums b{font-family:var(--serif);font-weight:400;font-size:clamp(40px,4vw,60px);line-height:1;min-width:2.4ch}
+.talk .nums span{font-size:14px;color:var(--ink-2)}
+@media (max-width:900px){.talk{grid-template-columns:1fr}}
+
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 2fr;gap:40px}
+.faq h2{font-size:clamp(36px,4vw,54px);margin-bottom:12px}
+.faq .sub{font-size:14.5px;color:var(--ink-2);max-width:30ch}
+.faq details{background:#fff;border-radius:16px;margin-bottom:10px;box-shadow:0 1px 0 rgba(28,43,69,.04),0 8px 30px rgba(28,43,69,.05)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 24px;font-weight:600;font-size:15.5px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{width:22px;height:22px;position:relative;flex:none}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;background:var(--ink);left:50%;top:50%;transform:translate(-50%,-50%);transition:transform 200ms var(--ease)}
+.faq summary i::before{width:14px;height:1.5px}.faq summary i::after{width:1.5px;height:14px}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(90deg)}
+.faq .a{padding:0 24px 22px;color:var(--ink-2);font-size:15px;max-width:60ch}
+@media (max-width:900px){.faq{grid-template-columns:1fr}}
+
+/* footer / request */
+.dark{background:linear-gradient(180deg,var(--navy),var(--deep) 60%,var(--night));color:var(--paper)}
+.dark .ink-2{color:rgba(251,250,247,.72)}
+.request{padding:clamp(72px,9vw,120px) 0 56px}
+.request .grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.request h2{font-size:clamp(36px,4.2vw,56px);margin-bottom:16px}
+.request p{color:rgba(251,250,247,.72);max-width:40ch}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field.full{grid-column:1 / -1}
+.field label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(251,250,247,.55)}
+.field input,.field textarea{font:inherit;font-size:15px;color:var(--paper);background:rgba(251,250,247,.06);border:1px solid rgba(251,250,247,.16);border-radius:12px;padding:12px 14px;transition:border-color 150ms ease}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--signal-light)}
+.field textarea{min-height:96px;resize:vertical}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form .foot{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.form .foot small{font-size:12.5px;color:rgba(251,250,247,.5)}
+.status{grid-column:1 / -1;font-size:14px;color:rgba(251,250,247,.72);min-height:1.4em;margin:0}
+.status.err{color:#E8A392}
+.done{display:none}
+.done h3{font-size:clamp(30px,3vw,44px);margin-bottom:10px}
+.cmd{margin-top:56px;background:rgba(0,0,0,.35);border:1px solid rgba(251,250,247,.12);border-radius:16px;display:flex;align-items:stretch;overflow:hidden}
+.cmd pre{margin:0;padding:18px 22px;font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-all;flex:1;color:var(--paper)}
+.cmd pre .p{color:rgba(251,250,247,.4)}.cmd pre .v{color:var(--signal-light)}
+.cmd button{border:0;border-left:1px solid rgba(251,250,247,.12);background:transparent;color:rgba(251,250,247,.7);font:inherit;font-size:13px;padding:0 22px;cursor:pointer;min-width:100px}
+.cmd button:active{transform:scale(.97)}
+footer{padding:36px 0 calc(36px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(251,250,247,.12);font-size:12.5px;color:rgba(251,250,247,.5)}
+footer .row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+footer .legal{max-width:90ch;line-height:1.6}
+@media (max-width:900px){.request .grid{grid-template-columns:1fr}.form{grid-template-columns:1fr}.cmd{flex-direction:column}.cmd button{border-left:0;border-top:1px solid rgba(251,250,247,.12);padding:12px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ui .msg,.toast,.timeline li{animation:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tl-lockup" viewBox="0 0 328.42 80.98"><rect style="fill:var(--bar)" x="0" y="17.99" width="15.4" height="40.95" rx="7.7"/><rect style="fill:var(--bar)" x="28.01" y="0" width="15.4" height="69.26" rx="7.7"/><rect style="fill:var(--bar)" x="56.01" y="7.06" width="15.4" height="58.31" rx="7.7"/><rect style="fill:var(--bar-accent)" x="84.02" y="8.44" width="15.4" height="72.54" rx="7.7"/><path style="fill:var(--bar)" transform="translate(133.24 12.19)" d="M25.49 56.68L8.24 56.68C7.47 56.68 7.08 56.4 7.08 55.84C7.08 55.28 7.42 54.97 8.08 54.93L11.54 54.38C12.56 54.23 13.25 53.96 13.6 53.58C13.96 53.2 14.14 52.47 14.14 51.39L14.14 5.43C14.14 4.72 13.99 4.21 13.68 3.9C13.38 3.6 12.74 3.44 11.76 3.44C9.87 3.44 8.01 4.26 6.17 5.89C4.32 7.53 3.12 10.16 2.56 13.79L2.18 16.32C2.08 16.98 1.72 17.31 1.1 17.31C0.33 17.31 0 16.88 0.1 16.01L0.79 2.15C0.89 0.97 1.36 0.38 2.18 0.38C2.54 0.38 2.87 0.47 3.18 0.65C3.48 0.83 4 1.02 4.75 1.22C5.49 1.43 6.68 1.53 8.31 1.53L25.42 1.53C27.06 1.53 28.25 1.43 28.99 1.22C29.73 1.02 30.26 0.83 30.6 0.65C30.93 0.47 31.25 0.38 31.56 0.38C32.37 0.38 32.83 0.97 32.94 2.15L33.62 16.01C33.73 16.88 33.39 17.31 32.63 17.31C32.02 17.31 31.66 16.98 31.56 16.32L31.17 13.79C30.66 10.16 29.48 7.53 27.64 5.89C25.8 4.26 23.91 3.44 21.96 3.44C21 3.44 20.36 3.6 20.05 3.9C19.74 4.21 19.59 4.72 19.59 5.43L19.59 51.39C19.59 52.47 19.78 53.2 20.16 53.58C20.55 53.96 21.23 54.23 22.2 54.38L25.65 54.93C26.31 54.97 26.64 55.28 26.64 55.84C26.64 56.4 26.26 56.68 25.49 56.68M44.37 57.37C41.91 57.37 39.71 56.56 37.77 54.93C35.83 53.29 34.28 50.98 33.13 47.99C31.98 45 31.4 41.54 31.4 37.61C31.4 33.57 31.99 30.03 33.16 26.96C34.34 23.9 35.95 21.5 38 19.76C40.04 18.03 42.32 17.16 44.82 17.16C47.84 17.16 50.28 18.4 52.15 20.88C54.02 23.35 54.95 27.37 54.95 32.94C54.95 34.62 54.31 35.47 53.04 35.47L38.46 35.47C37.44 35.47 36.92 36.05 36.92 37.22C36.92 42.64 37.72 46.7 39.3 49.4C40.88 52.11 42.91 53.47 45.37 53.47C47.31 53.47 48.89 52.78 50.12 51.39C51.35 50.02 52.34 47.7 53.11 44.43C53.26 43.87 53.59 43.59 54.11 43.59C54.72 43.59 54.95 44.1 54.8 45.12C53.98 49.66 52.68 52.84 50.89 54.65C49.1 56.46 46.93 57.37 44.37 57.37M38.23 33.55L45.97 33.55C48.43 33.55 49.66 32.27 49.66 29.72C49.66 26.4 49.25 23.79 48.43 21.9C47.62 20.01 46.39 19.07 44.75 19.07C42.76 19.07 41.08 20.22 39.72 22.52C38.37 24.82 37.49 28.09 37.08 32.33C36.98 33.14 37.36 33.55 38.23 33.55M72.06 56.68L58.41 56.68C57.79 56.68 57.48 56.4 57.48 55.84C57.48 55.33 57.76 55.03 58.32 54.93L59.4 54.77C60.47 54.62 61.26 54.31 61.78 53.85C62.29 53.39 62.55 52.62 62.55 51.55L62.55 7.66C62.55 6.74 62.41 6.1 62.13 5.74C61.85 5.38 61.35 5.18 60.63 5.13L58.87 4.9C58.3 4.8 58.02 4.49 58.02 3.98C58.02 3.47 58.3 3.16 58.87 3.06C60.29 2.75 61.52 2.4 62.55 1.99C63.57 1.58 64.41 1.17 65.08 0.76C65.9 0.25 66.51 0 66.92 0C67.48 0 67.76 0.41 67.76 1.22L67.76 51.55C67.76 52.62 67.93 53.38 68.26 53.81C68.59 54.25 69.3 54.54 70.37 54.69L72.13 54.93C72.7 55.03 72.98 55.33 72.98 55.84C72.98 56.4 72.67 56.68 72.06 56.68M89.32 57.37C86.71 57.37 84.37 56.49 82.3 54.73C80.23 52.97 78.57 50.56 77.35 47.49C76.12 44.43 75.51 41 75.51 37.22C75.51 33.45 76.12 30.05 77.35 27.04C78.57 24.03 80.24 21.63 82.33 19.84C84.43 18.05 86.76 17.16 89.32 17.16C91.93 17.16 94.27 18.05 96.34 19.84C98.41 21.63 100.06 24.03 101.28 27.04C102.51 30.05 103.13 33.45 103.13 37.22C103.13 41 102.53 44.43 101.33 47.49C100.12 50.56 98.47 52.97 96.37 54.73C94.28 56.49 91.93 57.37 89.32 57.37M89.32 55.46C94.64 55.46 97.3 49.38 97.3 37.22C97.3 25.12 94.64 19.07 89.32 19.07C84 19.07 81.34 25.12 81.34 37.22C81.34 49.38 84 55.46 89.32 55.46M115.09 57.37C113.92 57.37 112.66 57.23 111.33 56.95C110 56.67 108.93 56.33 108.11 55.92C107.65 55.66 107.42 55.23 107.42 54.62L107.19 46.03C107.19 45.17 107.52 44.73 108.19 44.73C108.75 44.73 109.13 45.14 109.34 45.96C110.21 49.58 111.27 52.06 112.52 53.39C113.78 54.71 115.3 55.38 117.09 55.38C118.57 55.38 119.8 54.81 120.77 53.66C121.74 52.51 122.22 50.91 122.22 48.87C122.22 46.83 121.66 45.02 120.54 43.44C119.41 41.85 117.52 40.11 114.86 38.22C112.2 36.43 110.26 34.63 109.03 32.82C107.8 31.01 107.19 29.03 107.19 26.88C107.19 23.97 108.21 21.63 110.26 19.84C112.3 18.05 115.01 17.16 118.39 17.16C119.41 17.16 120.41 17.27 121.38 17.5C122.35 17.73 123.22 18.1 123.99 18.62C124.45 18.92 124.68 19.33 124.68 19.84L124.83 28.27C124.83 29.03 124.53 29.41 123.92 29.41C123.55 29.41 123.3 29.3 123.15 29.07C122.99 28.84 122.87 28.54 122.77 28.19C121.74 24.87 120.72 22.56 119.69 21.26C118.67 19.95 117.42 19.3 115.94 19.3C114.61 19.3 113.51 19.76 112.64 20.68C111.77 21.6 111.33 22.75 111.33 24.13C111.33 25.92 111.87 27.47 112.95 28.8C114.02 30.13 115.96 31.76 118.78 33.7C121.33 35.54 123.26 37.52 124.57 39.64C125.87 41.76 126.52 44.07 126.52 46.57C126.52 49.84 125.47 52.46 123.37 54.42C121.28 56.39 118.52 57.37 115.09 57.37M144.25 57.37C141.63 57.37 139.29 56.49 137.22 54.73C135.15 52.97 133.5 50.56 132.28 47.49C131.05 44.43 130.44 41 130.44 37.22C130.44 33.45 131.05 30.05 132.28 27.04C133.5 24.03 135.17 21.63 137.26 19.84C139.36 18.05 141.69 17.16 144.25 17.16C146.85 17.16 149.19 18.05 151.26 19.84C153.33 21.63 154.98 24.03 156.21 27.04C157.43 30.05 158.05 33.45 158.05 37.22C158.05 41 157.45 44.43 156.25 47.49C155.05 50.56 153.4 52.97 151.3 54.73C149.2 56.49 146.85 57.37 144.25 57.37M144.25 55.46C149.56 55.46 152.22 49.38 152.22 37.22C152.22 25.12 149.56 19.07 144.25 19.07C138.93 19.07 136.27 25.12 136.27 37.22C136.27 49.38 138.93 55.46 144.25 55.46M175.23 56.68L162.27 56.68C161.5 56.68 161.12 56.4 161.12 55.84C161.12 55.38 161.45 55.08 162.12 54.93L163.03 54.77C164.11 54.57 164.81 54.25 165.14 53.81C165.48 53.38 165.64 52.62 165.64 51.55L165.64 25.81C165.64 24.9 165.5 24.27 165.22 23.94C164.94 23.61 164.44 23.39 163.72 23.29L162.12 23.05C161.45 23.01 161.12 22.72 161.12 22.21C161.12 21.8 161.53 21.52 162.34 21.37C163.93 21.12 165.14 20.71 165.99 20.15C166.83 19.59 167.72 18.89 168.64 18.07C169.1 17.61 169.48 17.39 169.79 17.39C170.25 17.39 170.48 17.69 170.48 18.31L170.48 21.75C170.48 22.21 170.64 22.51 170.97 22.63C171.31 22.76 171.68 22.62 172.08 22.21C174.13 20.27 175.93 18.95 177.49 18.23C179.05 17.51 180.71 17.16 182.45 17.16C184.74 17.16 186.58 17.96 187.97 19.57C189.35 21.18 190.04 23.54 190.04 26.66L190.04 51.55C190.04 52.62 190.2 53.38 190.54 53.81C190.87 54.25 191.57 54.54 192.65 54.69L194.33 54.93C194.9 55.03 195.18 55.33 195.18 55.84C195.18 56.4 194.87 56.68 194.25 56.68L181.37 56.68C180.65 56.68 180.3 56.4 180.3 55.84C180.3 55.33 180.58 55.03 181.14 54.93L182.21 54.77C183.29 54.62 183.99 54.31 184.32 53.85C184.65 53.39 184.82 52.62 184.82 51.55L184.82 27.5C184.82 24.99 184.36 23.23 183.44 22.21C182.52 21.19 181.21 20.68 179.53 20.68C177.89 20.68 176.42 21.15 175.12 22.1C173.81 23.04 172.78 24.3 172.01 25.86C171.24 27.41 170.86 29.13 170.86 31.02L170.86 51.55C170.86 52.62 171.03 53.39 171.36 53.85C171.69 54.31 172.39 54.59 173.47 54.69L175.54 54.93C176.1 55.03 176.38 55.31 176.38 55.77C176.38 56.38 176 56.68 175.23 56.68"/></symbol><symbol id="tl-mark" viewBox="0 0 99.42 80.98"><rect style="fill:var(--bar)" x="0" y="17.99" width="15.4" height="40.95" rx="7.7"/><rect style="fill:var(--bar)" x="28.01" y="0" width="15.4" height="69.26" rx="7.7"/><rect style="fill:var(--bar)" x="56.01" y="7.06" width="15.4" height="58.31" rx="7.7"/><rect style="fill:var(--bar-accent)" x="84.02" y="8.44" width="15.4" height="72.54" rx="7.7"/></symbol></svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Teloson home"><svg class="lockup" role="img" aria-label="Teloson"><use href="#tl-lockup"/></svg></a>
+    <nav aria-label="Site">
+      <a class="link" href="#floor">How it works</a>
+      <a class="link" href="#talk">Straight talk</a>
+      <a class="pill ghost" href="../desk/">Client sign in</a>
+      <a class="pill paper" href="#invite">Request an account</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero" aria-label="Teloson">
+  <div class="wrap">
+    <p class="eyebrow"><i></i>Private trading floors, one client at a time</p>
+    <h1>Your own trading floor. <span class="glow">On your own Mac.</span></h1>
+    <p class="lede">Seventy-four AI agents watch the market from your machine and argue about it all day. Nothing gets bought or sold until you press the button.</p>
+    <div class="cta">
+      <a class="pill paper" href="#invite"><span class="dot"></span>Request an account</a>
+      <a class="quiet" href="#install">See the one-line install</a>
+    </div>
+    <p class="runs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Runs on your own Mac, macOS 14 or later. Nothing of yours leaves it.</p>
+  </div>
+  <div class="stage">
+    <div class="float f1"><span class="app"><span class="ai wa"><img src="img/whatsapp.svg" alt="WhatsApp"></span>WhatsApp · 10:12</span><b>Plan 0418 is waiting on you</b>US large cap, 2.1% of the book. Reasoning attached. <span class="num">44:12</span> left.</div>
+    <div class="float f2"><b>Your limits</b>Emergency brake <span class="num">10%</span> · bad day <span class="num">3%</span> · position cap <span class="num">5%</span><br>Signed and countersigned. Enforced in code.</div>
+    <div class="float f3"><span class="app"><span class="ai mail"><svg viewBox="0 0 24 24" aria-label="Email"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>Email · 14:20</span><b>Halted for the day</b>The book slipped past your bad-day limit. Nothing was sold. You release it tomorrow.</div>
+    <div class="float f4"><b>Floor log</b><span class="num">10:11:52</span> risk.drawdown.control within limit<br><span class="num">10:11:53</span> risk.kill.switch veto=no<br><span class="num">10:12:01</span> desk plan 0418 tabled</div>
+    <div class="mac" id="mac">
+      <div class="shot" data-w="1500"><img src="img/hero-mac.webp" width="1500" height="1048" alt="A MacBook running the Teloson desk" decoding="async" fetchpriority="high"><div class="plane" style="width:1500px;height:1048px"><div id="screen1" data-view="chat" data-m="matrix3d(0.982804,-0.006892,0,-9e-06,-0.010134,0.976078,0,-2e-05,0,0,1,0,158.779434,32.241653,0,1.0)"></div></div></div>
+    </div>
+    <div class="fade"></div>
+  </div>
+</section>
+
+<section class="block hook" id="floor">
+  <div class="wrap">
+    <h2>Most bots want your keys and your trust. This one wants your signature first.</h2>
+    <p>Teloson is a floor, not a bot. Seven departments measure one thing each, argue it out in the open, and hand you a plan with the reasoning attached. You are the only seat that can act.</p>
+    <div class="stats">
+      <div><b>74</b><span>agents on the floor, in seven departments</span></div>
+      <div><b>14</b><span>veto seats, any one of which kills a plan</span></div>
+      <div><b>45<small style="font-size:.5em">min</small></b><span>on the clock before a plan expires unapproved</span></div>
+      <div><b>0</b><span>orders placed without your click, ever</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="built" aria-label="What the desk is built on">
+  <div class="wrap">
+    <p class="lbl">Built on real things</p>
+    <div class="marks">
+      <span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg>Anthropic<small>reasoning</small></span>
+      <span class="mark word">Alpaca<small>broker</small></span>
+      <span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>macOS<small>runs on your Mac</small></span>
+      <span class="mark word mono">SEC EDGAR<small>filings</small></span>
+      <span class="mark word mono">Alpha Vantage<small>sentiment</small></span>
+      <span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.86 1.56L14.27 11.87H19.4L24 1.56H18.86M0 6.71L5.15 18.27L3.3 22.44H7.83L14.69 6.71H10.19L7.39 13.44L4.62 6.71H0M15.62 12.87C13.95 12.87 12.71 14.12 12.71 15.58C12.71 17 13.91 18.19 15.5 18.19C17.18 18.19 18.43 16.96 18.43 15.5C18.43 14.03 17.23 12.87 15.62 12.87Z"/></svg>Yahoo Finance<small>wire</small></span>
+      <span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.2666 21.2a.6141.6141 0 0 1-.6128.6128H3.3446a.614.614 0 0 1-.6128-.6128V8.1153a.6141.6141 0 0 1 .6128-.6128h17.3091a.6141.6141 0 0 1 .6128.6128V21.2zm-3.0315-3.4196v-1.1957a.0803.0803 0 0 0-.0803-.0803h-5.3725v1.3619h5.3725a.0817.0817 0 0 0 .0804-.083l-.0001-.0029zm.8171-2.5875v-1.2012a.0803.0803 0 0 0-.079-.0817h-6.191v1.3619h6.1896a.079.079 0 0 0 .0804-.0776v-.0041.0027zm-.8171-2.5875v-1.2066a.0803.0803 0 0 0-.0803-.0803h-5.3725v1.3619h5.3725a.0816.0816 0 0 0 .0803-.079v.004zM8.1492 14.0448v1.2257h1.7704c-.1457.749-.8049 1.2924-1.7704 1.2924-1.0906-.0405-1.9418-.9574-1.9013-2.048.0384-1.0338.8676-1.8629 1.9013-1.9013a1.77 1.77 0 0 1 1.2529.4903l.9342-.9329a3.1405 3.1405 0 0 0-2.1871-.8525c-1.8051 0-3.2684 1.4633-3.2684 3.2684 0 1.8051 1.4633 3.2684 3.2684 3.2684 1.8889 0 3.1323-1.3278 3.1323-3.1976a3.941 3.941 0 0 0-.0518-.6183l-3.0805.0054zM2.2701 7.6537a.6156.6156 0 0 1 .6128-.6128h12.1545l-1.2692-3.4904a.5952.5952 0 0 0-.7436-.3827L.3676 7.7749a.5938.5938 0 0 0-.3228.7749l2.2253 6.112V7.6537za.6156.6156 0 0 1 .6128-.6128h12.1545l-1.2692-3.4904a.5952.5952 0 0 0-.7436-.3827L.3676 7.7749a.5938.5938 0 0 0-.3228.7749l2.2253 6.112V7.6537zm21.3116-.3105l-8.803-2.3683.7517 2.0659h5.5836a.6141.6141 0 0 1 .6128.6128v8.7948l2.2471-8.3659a.5923.5923 0 0 0-.3922-.7393zm-4.4955-1.6738V2.7946a.6101.6101 0 0 0-.6115-.6074H5.5236a.6101.6101 0 0 0-.6156.6046v2.8368l8.3904-3.0519a.5937.5937 0 0 1 .7422.3895l.5447 1.498 4.5009 1.2052z"/></svg>Google News<small>wire</small></span>
+      <span class="mark word">CNBC<small>wire</small></span>
+      <span class="mark word">MarketWatch<small>wire</small></span>
+      <span class="mark word">Nasdaq<small>wire</small></span>
+      <span class="mark word">Seeking Alpha<small>wire</small></span>
+      <span class="mark word">Investing.com<small>wire</small></span>
+      <span class="mark word">GlobeNewswire<small>wire</small></span>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0" id="features">
+  <div class="wrap">
+    <article class="feature">
+      <div class="vis shot" data-w="1300"><img src="img/hands-mac.jpg" width="1300" height="867" alt="Hands on a MacBook running the Teloson desk" loading="lazy" decoding="async"><div class="plane" style="width:1300px;height:867px"><div id="screen2" data-view="bigchat" data-m="matrix3d(0.809948,-0.009974,0,-1.2e-05,-0.004638,0.870238,0,-1.4e-05,0,0,1,0,159.128891,55.281799,0,1.0)"></div></div></div>
+      <div class="copy">
+        <h3>A floor that argues in the open.</h3>
+        <p>Research, Risk, Execution, Portfolio, Data, Digital Assets and Macro each take a seat. Every seat measures one thing and says so in plain English. You can read along all day, or just read the plan that comes out of it.</p>
+        <div class="foot"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M12 4v16"/></svg></i>Seventy-four seats. Every one of them named.</div>
+      </div>
+    </article>
+    <article class="feature tall">
+      <div class="vis panel"><div class="phone"><div class="scr"><div class="notch"></div><div class="time">10:12</div><div class="date" id="lock-date">Tuesday 14 October</div><div id="lock-notis"></div></div></div></div>
+      <div class="copy">
+        <h3>Approve first. Always.</h3>
+        <p>A plan lands on your desk with the size, the limit, the reasoning and forty-five minutes on the clock. A message reaches you wherever you asked for one: email, WhatsApp, Telegram, iMessage, most texting apps. Approve it, or let it expire.</p>
+        <div class="foot"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i>Expired plans die. Revived ones get re-priced and re-reviewed.</div>
+      </div>
+    </article>
+    <article class="feature">
+      <div class="vis panel"><div class="ui"><div class="card blue"><div class="hd"><h3>Your limits</h3><div class="rt">what you signed for, and what is running</div></div><div id="limits-big"></div></div></div></div>
+      <div class="copy">
+        <h3>Your limits, enforced in code.</h3>
+        <p>Every number comes from the questionnaire you signed and is checked before any order reaches your broker. The desk does not use judgement to get past a limit. If it is missing something it needs to know, it refuses rather than guesses.</p>
+        <div class="foot"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></i>Change a limit later and the dashboard shows it next to the one you signed.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="block more" style="padding-top:0">
+  <div class="wrap">
+    <h2>And the rest of the building.</h2>
+    <div class="strip">
+      <div class="tile"><div class="art"><div class="win">The Office<div class="seats" id="office-seats"></div></div><span class="tag">who is at their desk</span></div><h4>The Office</h4><p>Every seat, lit when it is working.</p></div>
+      <div class="tile"><div class="art"><div class="win">News Wire<div class="row"><b>Fed minutes at 14:00</b><span>2m</span></div><div class="row"><b>NVDA guides above street</b><span>9m</span></div><div class="row"><b>Brent +1.8% on OPEC talk</b><span>14m</span></div><div class="row"><b>12 sources live</b><span class="u">fresh</span></div></div><span class="tag">real headlines, dated</span></div><h4>News Wire</h4><p>What the floor is reading, and how fresh it is.</p></div>
+      <div class="tile"><div class="art"><div class="win">Idea Board<div class="row"><b>XOM · energy carry</b><span>conviction</span></div><div class="bar"><i style="width:72%"></i></div><div class="row"><b>MSFT · post-earnings drift</b><span>conviction</span></div><div class="bar"><i style="width:48%"></i></div><div class="row"><b>TLT · duration</b><span class="d">rejected</span></div></div><span class="tag">ideas, with who found them</span></div><h4>Idea Board</h4><p>Where ideas build conviction or get rejected.</p></div>
+      <div class="tile"><div class="art"><div class="win">Performance<svg viewBox="0 0 220 80" preserveAspectRatio="none"><path d="M0 62 L20 58 L40 60 L60 50 L80 52 L100 44 L120 47 L140 38 L160 40 L180 30 L200 33 L220 24" fill="none" stroke="#4d8bff" stroke-width="2"/><path d="M0 62 L20 61 L40 62 L60 58 L80 59 L100 55 L120 56 L140 52 L160 53 L180 48 L200 49 L220 45" fill="none" stroke="#8b93a1" stroke-width="1.5" stroke-dasharray="3 3"/></svg><div class="row"><b>out-of-sample</b><span>vs buy and hold</span></div></div><span class="tag">honest curves</span></div><h4>Performance</h4><p>Out-of-sample curves next to buy-and-hold.</p></div>
+      <div class="tile"><div class="art"><div class="win">Audit Trail<div class="row"><b>10:41 approved 0418</b><span>you</span></div><div class="row"><b>10:41 order sent</b><span>exec</span></div><div class="row"><b>10:42 filled 0.03% over</b><span>fill quality</span></div><div class="row"><b>14:20 halt · bad day</b><span class="d">risk</span></div></div><span class="tag">every decision, dated</span></div><h4>Audit Trail</h4><p>Every decision, who made it, and when.</p></div>
+      <div class="tile"><div class="art"><div class="win">Practice desk<div class="row"><b>SIM MODE</b><span class="u">on</span></div><div class="row"><b>Real prices</b><span>yes</span></div><div class="row"><b>Real news</b><span>yes</span></div><div class="row"><b>Real money</b><span class="d">no</span></div></div><span class="tag">the first two weeks</span></div><h4>Practice desk</h4><p>Real prices, fake money, for a couple of weeks.</p></div>
+      <div class="tile"><div class="art"><div class="win">Breakout Rooms<div class="row"><b>Energy room</b><span>4 seats</span></div><div class="row"><b>Crypto 24/7</b><span>8 seats</span></div><div class="row"><b>Rates &amp; macro</b><span>6 seats</span></div></div><span class="tag">smaller conversations</span></div><h4>Breakout Rooms</h4><p>Smaller rooms for the specialists.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0" id="badday">
+  <div class="wrap">
+    <div class="sim">
+      <div>
+        <h2>A bad day, say.</h2>
+        <p class="lead">Pick your limits the way the questionnaire asks, and watch what the floor does on a rough session. This shows what the desk does, not what it earns.</p>
+        <div class="ctl">
+          <label>Bad-day halt <span id="v-bad">3%</span></label>
+          <div class="seg" data-key="bad"><button data-v="2">2%</button><button data-v="3" class="on">3%</button><button data-v="5">5%</button></div>
+          <label>Emergency brake <span id="v-brake">10%</span></label>
+          <div class="seg" data-key="brake"><button data-v="5">5%</button><button data-v="10" class="on">10%</button><button data-v="15">15%</button><button data-v="20">20%</button></div>
+          <label>Where the messages go</label>
+          <div class="chips" id="chips"><button class="on" data-v="WhatsApp"><span class="ai wa"><img src="img/whatsapp.svg" alt="WhatsApp"></span>WhatsApp</button><button data-v="Telegram"><span class="ai tg"><img src="img/telegram.svg" alt="Telegram"></span>Telegram</button><button data-v="iMessage"><span class="ai im"><svg viewBox="0 0 24 24" aria-label="iMessage"><path d="M5.285 0A5.273 5.273 0 0 0 0 5.285v13.43A5.273 5.273 0 0 0 5.285 24h13.43A5.273 5.273 0 0 0 24 18.715V5.285A5.273 5.273 0 0 0 18.715 0ZM12 4.154a8.809 7.337 0 0 1 8.809 7.338A8.809 7.337 0 0 1 12 18.828a8.809 7.337 0 0 1-2.492-.303A8.656 7.337 0 0 1 5.93 19.93a9.929 7.337 0 0 0 1.54-2.155 8.809 7.337 0 0 1-4.279-6.283A8.809 7.337 0 0 1 12 4.154"/></svg></span>iMessage</button><button class="on" data-v="email"><span class="ai mail"><svg viewBox="0 0 24 24" aria-label="Email"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>Email</button></div>
+        </div>
+      </div>
+      <div>
+        <div class="chart"><svg id="daychart" viewBox="0 0 640 300" aria-label="A simulated bad day for the book"></svg></div>
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+    </div>
+    <div class="capture">
+      <p>Not a public service. Ask for an account and we will reply ourselves.</p>
+      <form id="capture" novalidate><input type="email" id="cap-email" placeholder="you@example.com" autocomplete="email" inputmode="email"><button class="pill navy" type="submit">Request an account</button></form>
+    </div>
+  </div>
+</section>
+
+<section class="block trust" style="padding-top:0">
+  <div class="wrap">
+    <h2>We work hard to keep your money <span class="k">yours</span>.</h2>
+    <div class="tgrid">
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M5 10V6l7-3 7 3v4M5 10v9h14v-9"/></svg></i><b>It never holds your money</b><p>Your account stays in your name, at your broker, on your machine. Teloson is software and setup.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></svg></i><b>Keys stay on your Mac</b><p>The installer asks for your own API keys and keeps them in your home folder. Nothing is sent to us. We cannot see your desk.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></i><b>Approve-first, in code</b><p>No order reaches your broker without your click. Typing "buy" in the chat does nothing on a client desk.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M10 4v2h4V4"/></svg></i><b>Halts only you release</b><p>A bad day halts the floor for the rest of the session. The emergency brake halts it until you say otherwise. It tells you why, every time.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></i><b>Practice desk first</b><p>Real prices, real news, fake money, for a couple of weeks. It restarts itself if it crashes, halted, and messages you.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 16l10-10 2 2L8 18H6v-2Z"/></svg></i><b>Signed limits, logged changes</b><p>The questionnaire is signed and countersigned. Change a limit later and the record shows it next to the one you agreed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0" id="talk">
+  <div class="wrap">
+    <div class="talk">
+      <div>
+        <h2>Straight talk, before you ask.</h2>
+        <p>This is experimental software. Its own validation harness has certified zero trading signals as statistically proven, and in its own out-of-sample backtests nothing it has tried beats buy-and-hold. It does not pretend otherwise, and neither do we.</p>
+        <p>Losses are possible at all times. Stops fill at the next available price, not the stop price, and overnight gaps have gone well past them. Only put in capital you can afford to lose entirely. If that framing is unacceptable, this is not for you.</p>
+      </div>
+      <div class="nums">
+        <div><b>0</b><span>trading signals its own harness has certified as statistically proven</span></div>
+        <div><b>10.8%</b><span>the best honest annualised result it has measured, out of sample</span></div>
+        <div><b>0</b><span>backtests where it beat plain buy-and-hold</span></div>
+        <div><b>100%</b><span>of orders that waited for a human first</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0" id="faq">
+  <div class="wrap">
+    <div class="faq">
+      <div><h2>Questions we get.</h2><p class="sub">We read every note ourselves and reply personally. Ask anything.</p></div>
+      <div>
+        <details><summary>How do I get an account?<i></i></summary><div class="a">Ask for one below. If it is a fit, the questionnaire comes next, you sign it, we countersign it, and the account is made by hand. The installer refuses everyone without one.</div></details>
+        <details><summary>What do I need?<i></i></summary><div class="a">A Mac, the code from your welcome note, and about ten minutes. The installer brings Node with it if the Mac has none, asks for your own API keys as it goes (blank is allowed), and never needs an admin password.</div></details>
+        <details><summary>Can it trade without me?<i></i></summary><div class="a">No. Every plan waits for your click and expires after forty-five minutes if you do nothing. Chat orders are off for every client. That is enforced in code, not in a setting.</div></details>
+        <details><summary>How do I hear from it?<i></i></summary><div class="a">Wherever you asked for it in the questionnaire: email, WhatsApp, Telegram, iMessage, most texting apps. A plan waiting on you, a halt, a stop-loss flag, and the daily summary at 17:05.</div></details>
+        <details><summary>Is my money safe with Teloson?<i></i></summary><div class="a">Teloson never holds it. Your account stays at your broker in your name. Your keys stay on your Mac. Software can still lose money, and this one can; the limits you sign are there to bound how much, not to prevent it.</div></details>
+        <details><summary>What if it crashes?<i></i></summary><div class="a">It comes back on its own, halted, and messages you to say so. The brakes, the high-water mark and the daily counts survive a restart.</div></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<section class="dark request" id="invite">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <h2>A small number of clients at a time.</h2>
+        <p>Tell us a little about you. We reply personally, usually within a few days. If it is a fit, the questionnaire comes next, and your account after that.</p>
+        <div class="cmd" id="install">
+          <pre><span class="p">$</span> curl -fsSL https://jmweinst.github.io/teloson/install.sh | bash -s -- <span class="v">TL-XXXX-XXXX-XXXX</span> <span class="v">you@example.com</span></pre>
+          <button type="button" id="copy" aria-label="Copy the install command">Copy</button>
+        </div>
+        <p style="font-size:13px;margin-top:12px;color:rgba(251,250,247,.5)">That is the whole install. Your code and email are filled in for you on the client page.</p>
+      </div>
+      <div>
+        <form class="form" id="interest" novalidate>
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required maxlength="120"></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200" inputmode="email"></div>
+          <div class="field full"><label for="f-location">Where you are based</label><input id="f-location" name="location" type="text" autocomplete="country-name" maxlength="120" placeholder="City, country"></div>
+          <div class="field full"><label for="f-note">What would you want a floor to do for you?</label><textarea id="f-note" name="note" maxlength="2000" placeholder="Optional. A line or two is plenty."></textarea></div>
+          <div class="hp" aria-hidden="true"><label for="f-company">Company</label><input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
+          <p class="status" id="f-status" role="status" aria-live="polite"></p>
+          <div class="foot"><button class="pill paper" type="submit" id="f-submit">Request an account</button><small>Used to reply to you and for nothing else.</small></div>
+        </form>
+        <div class="done" id="done"><h3>Received.</h3><p>Thank you. We will reply personally, usually within a few days.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <a class="brand" href="#top" aria-label="Teloson home"><svg class="lockup" role="img" aria-label="Teloson"><use href="#tl-lockup"/></svg></a>
+        <span>New York</span>
+        <a class="quiet" href="../desk/">Client sign in</a>
+        <a class="quiet" href="../">The floor, rendered live</a>
+      </div>
+      <p class="legal">&copy; 2026 Teloson. Software and setup, not investment advice. Teloson does not manage your money and never holds it. Its own validation harness has certified no trading signal as statistically proven; past performance, simulated or real, is no guarantee of future results. Losses are possible at all times. Only put in capital you can afford to lose entirely.</p>
+    </div>
+  </footer>
+</section>
+
+<script>
+(function(){
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- the desk, drawn in html at 1180×720 and scaled to fit ---------- */
+  var SCRIPT = [
+    ["Headline Scanner","data","FOMC minutes at 14:00. Wire freshness ok, 12 sources live."],
+    ["Live Tape","data","SPY +0.32% on the session. Breadth 61% up, spreads normal."],
+    ["Allocation","pm","US large cap is 2.1% under the mandate. Proposing a fill at 0.15% above mid, good for 45 minutes."],
+    ["Signal Validation","val","Sample 412 observations, out-of-sample holds. <em>veto=no</em>"],
+    ["Position Sizing","risk","Would be 2.1% of the book against a 5% cap. <em>veto=no</em>"],
+    ["Drawdown Control","risk","Book is down 0.4% against a 10% brake. <em>veto=no</em>"],
+    ["Kill Switch","risk","Nothing armed. <em>veto=no</em>"],
+    ["Desk","tl","Plan 0418 tabled. 74 seats heard, 0 vetoes. It is on your desk with the reasoning attached. 45:00 on the clock."]
+  ];
+  var AV = { data:"DA", val:"RV", risk:"RC", pm:"PM", exec:"EX", tl:"TL" };
+  function msg(m){ return '<div class="msg"><div class="av '+m[1]+'">'+AV[m[1]]+'</div><div><div class="who"><b>'+m[0]+'</b><span>'+({data:"data & intelligence",val:"research & validation",risk:"risk & compliance",pm:"portfolio management",exec:"trading & execution",tl:"the desk"})[m[1]]+'</span></div><div class="txt">'+m[2]+'</div></div></div>'; }
+  function planHTML(secs){
+    if(secs < 0) return '<div class="plan empty">No plan on the table. The floor is watching. Nothing waits on you.</div>';
+    var mm = String(Math.floor(secs/60)).padStart(2,"0"), ss = String(secs%60).padStart(2,"0");
+    return '<div class="plan"><div class="t"><b>PLAN 0418 · BUY</b><i>'+mm+':'+ss+'</i></div><div class="d">US large cap · 2.1% of book · limit 0.15% above mid<br>Room convened: 74 seats heard, 0 vetoes. Reasoning attached.</div><div class="btns"><span class="ok">Approve</span><span class="rj">Reject</span></div></div>';
+  }
+  var ICON = {"wa": "<span class=\"ai wa\"><img src=\"img/whatsapp.svg\" alt=\"WhatsApp\"></span>", "tg": "<span class=\"ai tg\"><img src=\"img/telegram.svg\" alt=\"Telegram\"></span>", "im": "<span class=\"ai im\"><svg viewBox=\"0 0 24 24\" aria-label=\"iMessage\"><path d=\"M12 4c-4.6 0-8 3-8 6.6 0 2 1 3.7 2.6 4.9L5.5 19l3.9-1.5c.8.2 1.7.3 2.6.3 4.6 0 8-3 8-6.6S16.6 4 12 4Z\"/></svg></span>", "mail": "<span class=\"ai mail\"><svg viewBox=\"0 0 24 24\" aria-label=\"Email\"><rect x=\"3\" y=\"5.5\" width=\"18\" height=\"13\" rx=\"2.5\"/><path d=\"m3.5 7 8.5 6 8.5-6\"/></svg></span>"};
+  var LIMITS = '<div class="lim"><span class="h">Limit</span><span class="h">Signed</span><span class="h">Running</span><span>Emergency brake</span><span class="n">10%</span><span class="n ok">10%</span><span>Position cap</span><span class="n">5%</span><span class="n ok">5%</span><span>Bad-day halt</span><span class="n">3%</span><span class="n ok">3%</span><span>Daily orders</span><span class="n">20</span><span class="n ok">3 so far</span></div>';
+  var LIMITS_BIG = '<div class="lim big"><span class="h">Limit</span><span class="h">Signed</span><span class="h">Running</span>'+
+    '<span>Emergency brake</span><span class="n">10%</span><span class="n ok">10%</span><span>Position cap</span><span class="n">5%</span><span class="n ok">5%</span><span>Bad-day halt</span><span class="n">3%</span><span class="n ok">3%</span><span>Exit flag</span><span class="n">8%</span><span class="n ok">8%</span><span>Losing streak</span><span class="n">3 then 5</span><span class="n ok">3 then 5</span><span>Daily orders</span><span class="n">20</span><span class="n ok">20</span><span>Daily dollars</span><span class="n">$25,000</span><span class="n ok">$25,000</span><span>Appetite</span><span class="n">40 / 100</span><span class="n ok">40 / 100</span><span>Chat orders</span><span class="n">off</span><span class="n ok">off</span></div>'+
+    '<div class="log"><div><span>2026-08-21</span>Questionnaire signed and countersigned. Limits loaded from profiles/your-mandate.json.</div><div><span>2026-09-03</span>Appetite 35 → 40, changed by you. Shown beside the signed value until you sign again.</div><div><span>today</span>Every limit checked before each order. Nothing running differs from what you signed.</div></div>';
+  var BIGCHAT = '<div class="body1"><div class="card"><div class="hd"><h3>Desk Chat</h3><div class="rt">the floor, talking to itself · 74 seats</div></div><div class="bd"><div class="chat" data-chat="big"></div></div></div></div>';
+  var MAINS = {
+    chat: '<div class="card"><div class="hd"><h3>Desk Chat</h3><div class="rt">the floor, talking to itself</div></div><div class="bd"><div class="chat" data-chat="full"></div></div></div><div class="composer"><div>Talk to the desk…  type @ to address someone directly</div><span>Send</span></div>',
+    limits: '<div class="card blue"><div class="hd"><h3>Your limits</h3><div class="rt">what you signed for, and what is running</div></div>' + LIMITS_BIG + '</div><div></div>'
+  };
+  function deskHTML(view){
+    if(view === "bigchat") return '<div class="desk ui bigchat"><div class="top"><div class="brandname"><i></i>TELOSON</div><div class="stat"><div class="l">Net Asset Value</div><div class="v">$248,910.42</div></div><div class="stat"><div class="l">Positions</div><div class="v">9</div></div><div class="mkt"><span class="on">NYSE</span><span class="on">NASDAQ</span><span class="on">CRYPTO</span></div><div class="mode"><span class="on">Approve first</span><span>Auto</span></div></div>' + BIGCHAT + '</div>';
+    var on = view === "limits" ? "Account" : "Live Chat";
+    var nav = function(n){ return '<div class="nav'+(n === on ? ' on' : '')+'">'+n+'</div>'; };
+    return '<div class="desk ui">'+
+    '<div class="top"><div class="brandname"><i></i>TELOSON</div>'+
+    '<div class="stat"><div class="l">Net Asset Value</div><div class="v">$248,910.42</div></div><div class="stat"><div class="l">Buying Power</div><div class="v">$61,204.10</div></div><div class="stat"><div class="l">Positions</div><div class="v">9</div></div>'+
+    '<div class="mkt"><span class="on">NYSE</span><span class="on">NASDAQ</span><span class="on">CME</span><span>LSE</span><span class="on">CRYPTO</span></div>'+
+    '<div class="mode"><span class="on">Approve first</span><span>Auto</span></div></div>'+
+    '<div class="body"><div class="side"><div class="grp">Floor</div>'+nav("Live Chat")+nav("The Office")+nav("The Team")+nav("Breakout Rooms")+nav("Archive")+
+    '<div class="grp">Markets</div>'+nav("Market Data")+nav("News Wire")+'<div class="grp">Research</div>'+nav("Idea Board")+nav("Strategies")+
+    '<div class="grp">Portfolio</div>'+nav("Account")+nav("Performance")+nav("Audit Trail")+'<div class="nav propose">Propose a trade</div></div>'+
+    '<div class="main">'+MAINS[view]+'</div>'+
+    '<div class="right"><div class="card amber"><div class="hd"><h3>Waiting on you</h3><div class="rt">plans that need your approval</div></div><div class="plan-slot"></div></div>'+
+    '<div class="card blue"><div class="hd"><h3>Your limits</h3><div class="rt">what you signed for</div></div>'+LIMITS+'</div>'+
+    '<div class="card"><div class="hd"><h3>Alerts</h3><div class="rt">what it told you</div></div><div class="al"><div><span>10:12</span><i><b>Plan 0418 waiting on you.</b> Sent by WhatsApp and email.</i></div><div><span>09:31</span><i><b>Session open.</b> Wires fresh, 12 live.</i></div><div><span>06:55</span><i><b>Overnight data checked.</b> Nothing stale.</i></div></div></div></div></div></div>';
+  }
+  document.querySelectorAll("[data-view]").forEach(function(el){ el.innerHTML = deskHTML(el.dataset.view); el.firstChild.style.transform = el.dataset.m; });
+  document.getElementById("limits-big").innerHTML = LIMITS_BIG;
+  function fit(){ document.querySelectorAll(".shot").forEach(function(sh){ var pl = sh.querySelector(".plane"); if(pl) pl.style.transform = "scale(" + (sh.clientWidth / +sh.dataset.w) + ")"; }); }
+  fit(); window.addEventListener("resize", fit);
+
+  /* the conversation loops: the floor talks, a plan gets tabled, the clock runs, then it starts again */
+  var chats = document.querySelectorAll(".chat"), planSlots = document.querySelectorAll(".plan-slot"), notis = document.getElementById("lock-notis");
+  var step = 0, secs = -1, timer;
+  function render(){ var h = planHTML(secs); planSlots.forEach(function(p){ p.innerHTML = h; }); }
+  function tick(){
+    if(step < SCRIPT.length){
+      var m = SCRIPT[step++];
+      chats.forEach(function(c){ var keep = c.dataset.chat === "full" ? 8 : c.dataset.chat === "big" ? 5 : 4; c.insertAdjacentHTML("beforeend", msg(m)); while(c.children.length > keep) c.removeChild(c.firstChild); });
+      if(step === SCRIPT.length){ secs = 45*60; render(); pushToasts(); }
+      timer = setTimeout(tick, reduced ? 2600 : 1900);
+    } else if(secs > 45*60 - 40){ secs--; render(); timer = setTimeout(tick, 1000); }
+    else { step = 0; secs = -1; render(); chats.forEach(function(c){ c.innerHTML = ""; }); notis.innerHTML = ""; timer = setTimeout(tick, 1400); }
+  }
+  function pushToasts(){
+    var T = [["wa","WhatsApp","Teloson","Plan 0418 is waiting on you. 2.1% of the book, 44:59 left."],["tg","Telegram","Teloson desk","Plan 0418 · BUY · reasoning attached."],["im","iMessage","Teloson","A plan needs your click. Reply APPROVE 0418."],["mail","Email","Teloson","Plan 0418 waiting on you (expires 10:57)."]];
+    notis.innerHTML = "";
+    T.forEach(function(t, i){ setTimeout(function(){ notis.insertAdjacentHTML("beforeend", '<div class="noti">'+ICON[t[0]]+'<div><div class="h"><span>'+t[1]+'</span><span>now</span></div><b>'+t[2]+'</b>'+t[3]+'</div></div>'); }, i * 520); });
+  }
+  (function(){ var d = new Date(), ld = document.getElementById("lock-date"); if(ld) ld.textContent = d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }); })();
+  render();
+  var started = false;
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started = true; tick(); } }); }, { threshold: 0.2 });
+  io.observe(document.getElementById("mac"));
+  document.addEventListener("visibilitychange", function(){ if(document.hidden){ clearTimeout(timer); } else if(started){ clearTimeout(timer); timer = setTimeout(tick, 600); } });
+
+  /* the office tile */
+  var os = document.getElementById("office-seats"), veto = [0,1,2,3,5,10,11,12,13,14,15,16,25,50];
+  for(var i = 0; i < 40; i++){ var el = document.createElement("i"); if(veto.indexOf(i) >= 0) el.className = "veto"; else if(i % 3 !== 1) el.className = "on"; os.appendChild(el); }
+  setInterval(function(){ var k = Math.floor(Math.random()*40), el = os.children[k]; if(el && !el.classList.contains("veto")) el.classList.toggle("on"); }, 700);
+
+  /* ---------- a bad day ---------- */
+  var path = []; (function(){ var v = 0, seed = 11; function r(){ seed = (seed*16807)%2147483647; return (seed-1)/2147483646; }
+    for(var i = 0; i <= 78; i++){ var t = i/78; var drift = t < 0.72 ? -7.8*t*t : -5.6 + (t-0.72)*8.0; v = drift + (r()-0.5)*0.35; path.push(v); } path[0] = 0; })();
+  var lim = { bad: 3, brake: 10 }, apps = ["WhatsApp","email"];
+  function tstr(i){ var m = 9*60 + 30 + i*5; return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0"); }
+  function drawDay(){
+    var svg = document.getElementById("daychart"), W = 640, H = 300, L = 44, R = 12, T = 18, B = 34;
+    var yMin = -8, yMax = 1; var X = function(i){ return L + i/78*(W-L-R); }, Y = function(v){ return T + (yMax - v)/(yMax - yMin)*(H-T-B); };
+    var badAt = -1, brakeAt = -1, halfAt = -1;
+    for(var i = 0; i < path.length; i++){ if(badAt < 0 && path[i] <= -lim.bad) badAt = i; if(brakeAt < 0 && path[i] <= -lim.brake) brakeAt = i; if(halfAt < 0 && path[i] <= -lim.brake/2) halfAt = i; }
+    var haltAt = badAt >= 0 ? badAt : -1;
+    var d = "", d2 = "";
+    for(var j = 0; j < path.length; j++){ var p = (j ? "L" : "M") + X(j).toFixed(1) + " " + Y(path[j]).toFixed(1) + " "; if(haltAt < 0 || j <= haltAt) d += p; if(haltAt >= 0 && j >= haltAt) d2 += (j === haltAt ? "M" : "L") + X(j).toFixed(1) + " " + Y(path[j]).toFixed(1) + " "; }
+    var s = "";
+    [0,-2,-4,-6,-8].forEach(function(g){ s += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="rgba(28,43,69,.1)"/><text class="ax" x="'+(L-8)+'" y="'+(Y(g)+4)+'" text-anchor="end">'+g+'%</text>'; });
+    [0,26,52,78].forEach(function(i){ s += '<text class="ax" x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle">'+tstr(i)+'</text>'; });
+    s += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(-lim.bad)+'" y2="'+Y(-lim.bad)+'" stroke="#D25B4D" stroke-dasharray="4 4" opacity=".7"/><text class="ax" x="'+(W-R)+'" y="'+(Y(-lim.bad)-5)+'" text-anchor="end" fill="#D25B4D">bad day '+lim.bad+'%</text>';
+    if(lim.brake <= 8) s += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(-lim.brake)+'" y2="'+Y(-lim.brake)+'" stroke="#1C2B45" stroke-dasharray="4 4" opacity=".5"/><text class="ax" x="'+(W-R)+'" y="'+(Y(-lim.brake)-5)+'" text-anchor="end">brake '+lim.brake+'%</text>';
+    s += '<path d="'+d+'" fill="none" stroke="#1C2B45" stroke-width="2.2" stroke-linejoin="round"/>';
+    if(d2) s += '<path d="'+d2+'" fill="none" stroke="#7E8798" stroke-width="1.6" stroke-dasharray="3 4"/>';
+    if(haltAt >= 0) s += '<circle cx="'+X(haltAt)+'" cy="'+Y(path[haltAt])+'" r="5" fill="#D25B4D"/><circle cx="'+X(haltAt)+'" cy="'+Y(path[haltAt])+'" r="11" fill="rgba(210,91,77,.18)"/><text class="ax" x="'+(X(haltAt)+14)+'" y="'+(Y(path[haltAt])+4)+'" fill="#D25B4D">halted '+tstr(haltAt)+'</text>';
+    svg.innerHTML = s;
+    var via = apps.length ? apps.join(" and ") : "nowhere (you switched every channel off)";
+    var ev = [];
+    ev.push({ t:"09:31", c:"ok", b:"Session open.", r:"Wires fresh. The floor starts measuring." });
+    if(halfAt >= 0 && (haltAt < 0 || halfAt <= haltAt)) ev.push({ t:tstr(halfAt), c:"warn", b:"Halfway to your brake.", r:"Book down "+(lim.brake/2).toFixed(1)+"%. A heads-up went out on "+via+"." });
+    if(haltAt >= 0) ev.push({ t:tstr(haltAt), c:"halt", b:"Bad-day halt at "+lim.bad+"%.", r:"Trading stops for the rest of the session. Nothing is sold. You heard on "+via+", and again every two hours until you acknowledged it." });
+    if(brakeAt >= 0) ev.push({ t:tstr(brakeAt), c:"halt", b:"Emergency brake at "+lim.brake+"%.", r:"Everything halts until you release it yourself. The message says why." });
+    if(haltAt < 0 && brakeAt < 0) ev.push({ t:tstr(56), c:"ok", b:"Worst point of the day, "+Math.min.apply(null, path).toFixed(1)+"%.", r:"Inside your limits, so the floor kept working." });
+    ev.push({ t:"17:05", c:"ok", b:"Daily summary.", r:"Account value, the day's move, what is waiting on you, and "+(haltAt >= 0 || brakeAt >= 0 ? "that the floor is halted" : "that nothing is halted")+". Sent on "+via+"." });
+    var tl = document.getElementById("timeline"); tl.innerHTML = ev.map(function(e, i){ return '<li class="'+e.c+'" style="animation-delay:'+(i*70)+'ms"><time>'+e.t+'</time><div><b>'+e.b+'</b> '+e.r+'</div></li>'; }).join("");
+  }
+  document.querySelectorAll(".seg").forEach(function(seg){ seg.addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; seg.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x === b); }); lim[seg.dataset.key] = +b.dataset.v; document.getElementById("v-"+seg.dataset.key).textContent = b.dataset.v+"%"; drawDay(); }); });
+  document.getElementById("chips").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; b.classList.toggle("on"); apps = Array.prototype.filter.call(this.children, function(x){ return x.classList.contains("on"); }).map(function(x){ return x.dataset.v; }); drawDay(); });
+  drawDay();
+
+  /* ---------- copy the command ---------- */
+  var copy = document.getElementById("copy"), cmdText = "curl -fsSL https://jmweinst.github.io/teloson/install.sh | bash -s -- TL-XXXX-XXXX-XXXX you@example.com", copyTimer;
+  copy.addEventListener("click", function(){
+    function did(){ copy.textContent = "Copied"; clearTimeout(copyTimer); copyTimer = setTimeout(function(){ copy.textContent = "Copy"; }, 1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(cmdText).then(did, function(){}); }
+  });
+
+  /* ---------- the short pill hands off to the full form ---------- */
+  document.getElementById("capture").addEventListener("submit", function(e){ e.preventDefault(); var v = document.getElementById("cap-email").value.trim(); document.getElementById("f-email").value = v; document.getElementById("invite").scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); setTimeout(function(){ document.getElementById(v ? "f-name" : "f-email").focus({ preventScroll: true }); }, 500); });
+
+  /* ---------- request an account ---------- */
+  var ENDPOINT = "https://jiyujojygjufkfdkcycd.supabase.co/rest/v1/teloson_interest";
+  var KEY = "sb_publishable_YxqbAEU_h_R0GI-OqCpKhA_H-Z2mL2V";
+  var form = document.getElementById("interest"), status = document.getElementById("f-status"), submit = document.getElementById("f-submit"), done = document.getElementById("done");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = form.name.value.trim(), email = form.email.value.trim(), loc = form.location.value.trim(), note = form.note.value.trim();
+    status.className = "status";
+    if(form.company.value){ form.reset(); return; }
+    if(!name){ status.textContent = "Please add your name."; status.className = "status err"; form.name.focus(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ status.textContent = "That email does not look right."; status.className = "status err"; form.email.focus(); return; }
+    submit.disabled = true; status.textContent = "Sending…";
+    fetch(ENDPOINT, { method: "POST", headers: { "apikey": KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify({ name: name, email: email, location: loc || null, note: note || null, source: (window.location.hostname || "teloson.com") + "/v2" }) })
+    .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); form.style.display = "none"; done.style.display = "block"; })
+    .catch(function(){ submit.disabled = false; status.textContent = (typeof PREVIEW !== "undefined") ? "This is the preview copy; the form sends on teloson.com." : "That did not go through. Please try again in a moment."; status.className = "status err"; });
+  });
+})();
+</script>
+</body>
+</html>
