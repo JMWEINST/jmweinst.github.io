@@ -179,6 +179,7 @@ html,body{overflow-x:clip}
 .ai img,.ai svg{width:26px;height:26px;display:block}
 .ai.wa{background:#fff}.ai.tg{background:transparent}.ai.tg img{width:40px;height:40px}.ai.im{background:#34C759}.ai.mail{background:#4F76B0}
 .ai.mail svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ai.sms{background:#1C2B45}.ai.sms svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
 .ai.im svg{width:24px;height:24px;fill:#fff}
 .float .ai{width:22px;height:22px;border-radius:6px}.float .ai img{width:15px;height:15px}.float .ai.tg img{width:22px;height:22px}.float .ai svg{width:13px;height:13px}
 /* the panels in the feature cards, drawn at reading size on navy */
@@ -406,7 +407,7 @@ footer .legal{max-width:90ch;line-height:1.6}
   <div class="wrap">
     <p class="eyebrow"><i></i>Private trading floors, one client at a time</p>
     <h1>Your own trading floor. <span class="glow">On your own Mac.</span></h1>
-    <p class="lede">Seventy-four AI agents watch the market from your machine and argue about it all day. Nothing gets bought or sold until you press the button.</p>
+    <p class="lede">Seventy-four AI agents watch the market from your machine and argue about it all day. On your real account, nothing gets bought or sold until you press the button.</p>
     <div class="cta">
       <a class="pill paper" href="#invite"><span class="dot"></span>Request an account</a>
       <a class="quiet" href="#install">See the one-line install</a>
@@ -433,7 +434,7 @@ footer .legal{max-width:90ch;line-height:1.6}
       <div><b>74</b><span>agents on the floor, in seven departments</span></div>
       <div><b>14</b><span>veto seats, any one of which kills a plan</span></div>
       <div><b>45<small style="font-size:.5em">min</small></b><span>on the clock before a plan expires unapproved</span></div>
-      <div><b>0</b><span>orders placed without your click, ever</span></div>
+      <div><b>0</b><span>real-money orders placed without your click, ever</span></div>
     </div>
   </div>
 </section>
@@ -473,7 +474,7 @@ footer .legal{max-width:90ch;line-height:1.6}
       <div class="vis panel"><div class="phone"><div class="scr"><div class="notch"></div><div class="time">10:12</div><div class="date" id="lock-date">Tuesday 14 October</div><div id="lock-notis"></div></div></div></div>
       <div class="copy">
         <h3>Approve first. Always.</h3>
-        <p>A plan lands on your desk with the size, the limit, the reasoning and forty-five minutes on the clock. A message reaches you wherever you asked for one: email, WhatsApp, Telegram, iMessage, most texting apps. Approve it, or let it expire.</p>
+        <p>A plan lands on your desk with the size, the limit, the reasoning and forty-five minutes on the clock. A message reaches you wherever you asked for one: email, WhatsApp, Telegram, iMessage or a plain text. Approve it, or let it expire.</p>
         <div class="foot"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i>Expired plans die. Revived ones get re-priced and re-reviewed.</div>
       </div>
     </article>
@@ -515,7 +516,7 @@ footer .legal{max-width:90ch;line-height:1.6}
           <label>Emergency brake <span id="v-brake">10%</span></label>
           <div class="seg" data-key="brake"><button data-v="5">5%</button><button data-v="10" class="on">10%</button><button data-v="15">15%</button><button data-v="20">20%</button></div>
           <label>Where the messages go</label>
-          <div class="chips" id="chips"><button class="on" data-v="WhatsApp"><span class="ai wa"><img src="img/whatsapp.svg" alt="WhatsApp"></span>WhatsApp</button><button data-v="Telegram"><span class="ai tg"><img src="img/telegram.svg" alt="Telegram"></span>Telegram</button><button data-v="iMessage"><span class="ai im"><svg viewBox="0 0 24 24" aria-label="iMessage"><path d="M5.285 0A5.273 5.273 0 0 0 0 5.285v13.43A5.273 5.273 0 0 0 5.285 24h13.43A5.273 5.273 0 0 0 24 18.715V5.285A5.273 5.273 0 0 0 18.715 0ZM12 4.154a8.809 7.337 0 0 1 8.809 7.338A8.809 7.337 0 0 1 12 18.828a8.809 7.337 0 0 1-2.492-.303A8.656 7.337 0 0 1 5.93 19.93a9.929 7.337 0 0 0 1.54-2.155 8.809 7.337 0 0 1-4.279-6.283A8.809 7.337 0 0 1 12 4.154"/></svg></span>iMessage</button><button class="on" data-v="email"><span class="ai mail"><svg viewBox="0 0 24 24" aria-label="Email"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>Email</button></div>
+          <div class="chips" id="chips"><button class="on" data-v="WhatsApp"><span class="ai wa"><img src="img/whatsapp.svg" alt="WhatsApp"></span>WhatsApp</button><button data-v="Telegram"><span class="ai tg"><img src="img/telegram.svg" alt="Telegram"></span>Telegram</button><button data-v="iMessage"><span class="ai im"><svg viewBox="0 0 24 24" aria-label="iMessage"><path d="M5.285 0A5.273 5.273 0 0 0 0 5.285v13.43A5.273 5.273 0 0 0 5.285 24h13.43A5.273 5.273 0 0 0 24 18.715V5.285A5.273 5.273 0 0 0 18.715 0ZM12 4.154a8.809 7.337 0 0 1 8.809 7.338A8.809 7.337 0 0 1 12 18.828a8.809 7.337 0 0 1-2.492-.303A8.656 7.337 0 0 1 5.93 19.93a9.929 7.337 0 0 0 1.54-2.155 8.809 7.337 0 0 1-4.279-6.283A8.809 7.337 0 0 1 12 4.154"/></svg></span>iMessage</button><button data-v="SMS"><span class="ai sms"><svg viewBox="0 0 24 24" aria-label="Text message"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 20 17H9l-4.5 3.5V17H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5z"/><path d="M7.5 10.5h9M7.5 13h6"/></svg></span>Text</button><button class="on" data-v="email"><span class="ai mail"><svg viewBox="0 0 24 24" aria-label="Email"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></span>Email</button></div>
         </div>
       </div>
       <div>
@@ -538,7 +539,7 @@ footer .legal{max-width:90ch;line-height:1.6}
       <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></svg></i><b>Keys stay on your Mac</b><p>The installer asks for your own API keys and keeps them in your home folder. Nothing is sent to us. We cannot see your desk.</p></div>
       <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></i><b>Approve-first, in code</b><p>No order reaches your broker without your click. Typing "buy" in the chat does nothing on a client desk.</p></div>
       <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M10 4v2h4V4"/></svg></i><b>Halts only you release</b><p>A bad day halts the floor for the rest of the session. The emergency brake halts it until you say otherwise. It tells you why, every time.</p></div>
-      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></i><b>Practice desk first</b><p>Real prices, real news, fake money, for a couple of weeks. It restarts itself if it crashes, halted, and messages you.</p></div>
+      <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></i><b>Practice desk first</b><p>Real prices, real news, fake money, for a couple of weeks. It trades the fake money on its own so you can watch its judgement. It restarts itself if it crashes, halted, and messages you.</p></div>
       <div><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 16l10-10 2 2L8 18H6v-2Z"/></svg></i><b>Signed limits, logged changes</b><p>The questionnaire is signed and countersigned. Change a limit later and the record shows it next to the one you agreed.</p></div>
     </div>
   </div>
@@ -556,7 +557,7 @@ footer .legal{max-width:90ch;line-height:1.6}
         <div><b>0</b><span>trading signals its own harness has certified as statistically proven</span></div>
         <div><b>10.8%</b><span>the best honest annualised result it has measured, out of sample</span></div>
         <div><b>0</b><span>backtests where it beat plain buy-and-hold</span></div>
-        <div><b>100%</b><span>of orders that waited for a human first</span></div>
+        <div><b>100%</b><span>of real-money orders that waited for a human first</span></div>
       </div>
     </div>
   </div>
@@ -568,9 +569,9 @@ footer .legal{max-width:90ch;line-height:1.6}
       <div><h2>Questions we get.</h2><p class="sub">We read every note ourselves and reply personally. Ask anything.</p></div>
       <div>
         <details><summary>How do I get an account?<i></i></summary><div class="a">Ask for one below. If it is a fit, the questionnaire comes next, you sign it, we countersign it, and the account is made by hand. The installer refuses everyone without one.</div></details>
-        <details><summary>What do I need?<i></i></summary><div class="a">A Mac, the code from your welcome note, and about ten minutes. The installer brings Node with it if the Mac has none, asks for your own API keys as it goes (blank is allowed), and never needs an admin password.</div></details>
-        <details><summary>Can it trade without me?<i></i></summary><div class="a">No. Every plan waits for your click and expires after forty-five minutes if you do nothing. Chat orders are off for every client. That is enforced in code, not in a setting.</div></details>
-        <details><summary>How do I hear from it?<i></i></summary><div class="a">Wherever you asked for it in the questionnaire: email, WhatsApp, Telegram, iMessage, most texting apps. A plan waiting on you, a halt, a stop-loss flag, and the daily summary at 17:05.</div></details>
+        <details><summary>What do I need?<i></i></summary><div class="a">A Mac on macOS 14 or later, the code from your welcome note, and about ten minutes. For live prices and, later, real money you need a brokerage account in your own name: Alpaca works from most countries, and a free Alpaca paper account covers the practice period. The installer brings Node with it if the Mac has none, asks for your own keys as it goes (blank is allowed), and never needs an admin password.</div></details>
+        <details><summary>Can it trade without me?<i></i></summary><div class="a">Not with real money. On your real account every plan waits for your click and expires after forty-five minutes if you do nothing. Chat orders are off for every client. That is enforced in code, not in a setting. The practice desk is the one exception, on purpose: it trades fake money on its own for a couple of weeks so you can see how it behaves before anything real is switched on.</div></details>
+        <details><summary>How do I hear from it?<i></i></summary><div class="a">Wherever you asked for it in the questionnaire: email, WhatsApp, Telegram, iMessage or a plain text message, any mix of them at once. A plan waiting on you, every fill, a halt, a stop-loss flag, and the daily summary at 17:05 New York time. The dashboard's Send test alert button checks each one.</div></details>
         <details><summary>Is my money safe with Teloson?<i></i></summary><div class="a">Teloson never holds it. Your account stays at your broker in your name. Your keys stay on your Mac. Software can still lose money, and this one can; the limits you sign are there to bound how much, not to prevent it.</div></details>
         <details><summary>What if it crashes?<i></i></summary><div class="a">It comes back on its own, halted, and messages you to say so. The brakes, the high-water mark and the daily counts survive a restart.</div></details>
       </div>
@@ -725,7 +726,8 @@ footer .legal{max-width:90ch;line-height:1.6}
     if(d2) s += '<path d="'+d2+'" fill="none" stroke="#7E8798" stroke-width="1.6" stroke-dasharray="3 4"/>';
     if(haltAt >= 0) s += '<circle cx="'+X(haltAt)+'" cy="'+Y(path[haltAt])+'" r="5" fill="#D25B4D"/><circle cx="'+X(haltAt)+'" cy="'+Y(path[haltAt])+'" r="11" fill="rgba(210,91,77,.18)"/><text class="ax" x="'+(X(haltAt)+14)+'" y="'+(Y(path[haltAt])+4)+'" fill="#D25B4D">halted '+tstr(haltAt)+'</text>';
     svg.innerHTML = s;
-    var via = apps.length ? apps.join(" and ") : "nowhere (you switched every channel off)";
+    var via = !apps.length ? "nowhere (you switched every channel off)"
+      : apps.length === 1 ? apps[0] : apps.slice(0, -1).join(", ") + " and " + apps[apps.length - 1];
     var ev = [];
     ev.push({ t:"09:31", c:"ok", b:"Session open.", r:"Wires fresh. The floor starts measuring." });
     if(halfAt >= 0 && (haltAt < 0 || halfAt <= haltAt)) ev.push({ t:tstr(halfAt), c:"warn", b:"Halfway to your brake.", r:"Book down "+(lim.brake/2).toFixed(1)+"%. A heads-up went out on "+via+"." });
