@@ -68,6 +68,7 @@ NAME="$(json name "$RESP")"; MANDATE="$(json mandate "$RESP")"
 PROFILE_B64="$(json profile_b64 "$RESP")"; IDENTITY_B64="$(json identity_b64 "$RESP")"
 echo "ok"
 bold "  Welcome, $NAME."; dim "  Mandate on file: $MANDATE"; echo
+case "$MANDATE" in example-client) fail "This account points at the shipped example mandate, not a signed one." "Reply to the email we sent you; the operators need to attach your mandate.";; esac
 case "$MANDATE" in ''|*[!a-z0-9-]*) fail "Your account has no mandate name on file yet." "Reply to the email we sent you; the operators need to finish your account.";; esac
 jsonbool ready "$RESP" || [ -n "${TELOSON_BUNDLE_FILE:-}" ] || fail "The desk is not ready to hand out yet." "The operators have not switched on downloads. Reply to the email we sent you."
 
