@@ -13,7 +13,7 @@
 if [ ! -t 0 ] && [ -z "${TELOSON_INSTALLER:-}" ]; then
   TMP="$(mktemp "${TMPDIR:-/tmp}/teloson-install.XXXXXX")"
   { echo '#!/bin/bash'; cat; } > "$TMP"
-  if [ -r /dev/tty ]; then TELOSON_INSTALLER="$TMP" exec bash "$TMP" "$@" < /dev/tty
+  if { : < /dev/tty; } 2>/dev/null; then TELOSON_INSTALLER="$TMP" exec bash "$TMP" "$@" < /dev/tty
   else TELOSON_INSTALLER="$TMP" exec bash "$TMP" "$@"; fi
 fi
 set -euo pipefail
