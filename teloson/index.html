@@ -116,6 +116,48 @@
   .beat{transform:none;transition:opacity 160ms ease}
   .beat.on{transition:opacity 220ms ease}
 }
+/* ---------- life below the floor ---------- */
+.rv{opacity:0;transform:translateY(22px);transition:opacity 700ms var(--ease-out),transform 900ms var(--ease-out);transition-delay:var(--d,0ms)}
+.rv.in{opacity:1;transform:none}
+.words .w{display:inline-block;opacity:0;transform:translateY(.4em);filter:blur(8px);transition:opacity 650ms var(--ease-out),transform 800ms var(--ease-out),filter 650ms var(--ease-out);transition-delay:var(--d,0ms)}
+.words.in .w{opacity:1;transform:none;filter:blur(0)}
+.label.rv{transform:none}
+.label.rv::after{transform:scaleX(0);transform-origin:0 50%;transition:transform 1200ms var(--ease-in-out) 200ms}
+.label.rv.in::after{transform:none}
+.cmd pre{position:relative}
+.cmd pre .typed{position:absolute;inset:22px 24px;pointer-events:none}
+.cmd pre.typing .ghost{visibility:hidden}
+.caret{display:inline-block;width:.6em;height:1.15em;vertical-align:-.22em;margin-left:3px;background:var(--signal-light);animation:caret 1.05s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.day{position:relative}
+.day li{transition:opacity 500ms ease}
+.day.live li{opacity:.34}
+.day.live li.lit{opacity:1}
+.day li time{transition:color 300ms ease}
+.day li.now time{color:var(--ink)}
+.day .rail{position:absolute;left:-26px;top:0;bottom:0;width:1px;background:var(--line);pointer-events:none}
+.day .rail i{position:absolute;inset:0;background:var(--accent);transform-origin:50% 0;transform:scaleY(0)}
+.day .rail b{position:absolute;left:-4px;top:-4px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.day .rail b::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--accent);animation:ping 2.2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ping{from{transform:scale(1);opacity:.6}to{transform:scale(3.2);opacity:0}}
+@media (max-width:900px){.day .rail{left:-12px}}
+.rules{position:relative}
+.rules .scan{position:absolute;left:-14px;right:-14px;top:0;height:0;border-radius:10px;background:var(--accent-soft);transition:transform 720ms var(--ease-in-out),height 720ms var(--ease-in-out),opacity 300ms ease;pointer-events:none;opacity:0}
+.rules .scan.on{opacity:1}
+.rule{position:relative}
+.rule dd.val{transition:color 400ms ease}
+.rule.chk dd.val{color:var(--ink)}
+@media (max-width:900px){.rules .scan{left:-8px;right:-8px}}
+.register{position:relative;overflow:hidden}
+.register::before{content:"";position:absolute;width:70vmax;height:70vmax;left:-25vmax;top:-35vmax;border-radius:50%;background:radial-gradient(closest-side,rgba(79,118,176,.3),rgba(79,118,176,0));pointer-events:none;animation:roam 28s cubic-bezier(.45,0,.55,1) infinite alternate}
+@keyframes roam{to{transform:translate(30vmax,20vmax)}}
+.register > *{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){
+  .rv,.words .w{opacity:1!important;transform:none!important;filter:none!important}
+  .label.rv::after{transform:none}
+  .caret,.register::before,.day .rail b::after{animation:none}
+  .day.live li{opacity:1}
+}
 </style>
 </head>
 <body>
@@ -354,6 +396,83 @@
     .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); form.style.display = "none"; done.style.display = "block"; })
     .catch(function(){ submit.disabled = false; status.textContent = (typeof PREVIEW !== "undefined") ? "This is the preview copy; the form sends on teloson.com." : "That did not go through. Please try again in a moment."; status.className = "status err"; });
   });
+
+  /* ================= life below the floor ================= */
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function each(l, fn){ Array.prototype.forEach.call(l, fn); }
+  var seen = new WeakMap(), seenIO = new IntersectionObserver(function(es){ es.forEach(function(e){ seen.set(e.target, e.isIntersecting); }); }, { rootMargin: "120px 0px" });
+  function every(el, ms, fn){ if(!el) return; seenIO.observe(el); setInterval(function(){ if(!document.hidden && seen.get(el)) fn(); }, ms); }
+  function splitWords(el){
+    var i = 0, frag = document.createDocumentFragment();
+    Array.prototype.slice.call(el.childNodes).forEach(function(n){
+      if(n.nodeType === 3) n.textContent.split(/(\s+)/).forEach(function(part){ if(!part) return; if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return; } var w = document.createElement("span"); w.className = "w"; w.textContent = part; w.style.setProperty("--d", (i++ * 42) + "ms"); frag.appendChild(w); });
+      else { if(n.nodeType === 1){ n.classList.add("w"); n.style.setProperty("--d", (i++ * 42) + "ms"); } frag.appendChild(n); }
+    });
+    el.innerHTML = ""; el.appendChild(frag); el.classList.add("words");
+  }
+  var rio = new IntersectionObserver(function(es){ es.forEach(function(e){ if(!e.isIntersecting) return; e.target.classList.add("in"); rio.unobserve(e.target); if(e.target._onin) e.target._onin(); }); }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+  function reveal(el, delay, onin){ if(!el) return; if(onin) el._onin = onin; if(reduced){ el.classList.add("in"); if(onin) onin(); return; } el.classList.add("rv"); if(delay) el.style.setProperty("--d", delay + "ms"); rio.observe(el); }
+  function words(el){ if(!el || reduced) return; splitWords(el); rio.observe(el); }
+  function all(sel, step){ each(document.querySelectorAll(sel), function(el, i){ reveal(el, i * step); }); }
+  each(document.querySelectorAll("section.block .label"), function(l){ reveal(l); });
+  each(document.querySelectorAll("section.block h2"), function(h){ words(h); });
+  all("#one-step .prose, #desk .prose, #rules .prose", 0);
+  all(".step-facts > div", 90);
+  reveal(document.querySelector(".gate"), 120);
+  all("#one-step .footnote, #rules .footnote", 0);
+  all(".rule", 45);
+  all(".talk p:not(.last)", 90);
+  words(document.querySelector(".talk .last"));
+  all("#interest .field, #interest .form-foot", 60);
+
+  /* the install line types itself */
+  var pre = document.querySelector("#cmd pre");
+  if(pre){
+    if(reduced) reveal(document.getElementById("cmd"));
+    else {
+      var segs = Array.prototype.map.call(pre.childNodes, function(n){ return { c: n.nodeType === 1 ? n.className : "", t: n.textContent }; });
+      var total = segs.reduce(function(a, g){ return a + g.t.length; }, 0);
+      var esc = function(t){ return t.replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
+      var upto = function(n){ var out = "", left = n; segs.forEach(function(g){ if(left <= 0) return; var part = g.t.slice(0, left); left -= part.length; out += g.c ? '<span class="' + g.c + '">' + esc(part) + '</span>' : esc(part); }); return out; };
+      pre.innerHTML = '<span class="ghost">' + pre.innerHTML + '</span><span class="typed" aria-hidden="true"><span class="caret"></span></span>';
+      pre.classList.add("typing");
+      var typed = pre.querySelector(".typed");
+      reveal(document.getElementById("cmd"), 0, function(){
+        var n = 0;
+        setTimeout(function step(){ n++; typed.innerHTML = upto(n) + '<span class="caret"></span>'; if(n < total) setTimeout(step, n < 2 ? 280 : 14 + Math.random() * 30); else { pre.classList.remove("typing"); typed.parentNode.removeChild(typed); pre.querySelector(".ghost").insertAdjacentHTML("beforeend", '<span class="caret"></span>'); } }, 450);
+      });
+    }
+  }
+
+  /* a day on the floor: the hours light up as you read down them */
+  var day = document.querySelector(".day");
+  if(day && !reduced){
+    day.classList.add("live");
+    day.insertAdjacentHTML("afterbegin", '<span class="rail" aria-hidden="true"><i></i><b></b></span>');
+    var rail = day.querySelector(".rail"), fill = rail.querySelector("i"), dot = rail.querySelector("b"), items = day.querySelectorAll("li"), dTick = false;
+    var dayFrame = function(){
+      dTick = false;
+      var r = day.getBoundingClientRect(), mark = innerHeight * .6, p = Math.max(0, Math.min(1, (mark - r.top) / r.height)), now = -1;
+      fill.style.transform = "scaleY(" + p.toFixed(4) + ")"; dot.style.transform = "translateY(" + (p * r.height).toFixed(1) + "px)";
+      each(items, function(li, i){ var on = li.getBoundingClientRect().top < mark; li.classList.toggle("lit", on); if(on) now = i; });
+      each(items, function(li, i){ li.classList.toggle("now", i === now); });
+    };
+    window.addEventListener("scroll", function(){ if(!dTick){ dTick = true; requestAnimationFrame(dayFrame); } }, { passive: true });
+    window.addEventListener("resize", dayFrame); dayFrame();
+  }
+
+  /* the rules: each limit is checked in turn, the way the desk checks them before every order */
+  var rules = document.querySelector(".rules");
+  if(rules && !reduced){
+    var rows = rules.querySelectorAll(".rule"), scan = document.createElement("div"), k = -1;
+    scan.className = "scan"; scan.setAttribute("aria-hidden", "true"); rules.insertBefore(scan, rules.firstChild);
+    every(rules, 1400, function(){
+      k = (k + 1) % rows.length; var r = rows[k];
+      scan.classList.add("on"); scan.style.height = r.offsetHeight + "px"; scan.style.transform = "translateY(" + r.offsetTop + "px)";
+      each(rows, function(x){ x.classList.toggle("chk", x === r); });
+    });
+  }
+
 })();
 </script>
 <script type="module" src="floor.js"></script>
