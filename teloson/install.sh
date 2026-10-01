@@ -1,7 +1,7 @@
 #!/bin/bash
 # Teloson desk installer.
 #
-#   curl -fsSL https://jmweinst.github.io/teloson/install.sh | bash -s -- TL-XXXX-XXXX-XXXX you@example.com
+#   curl -fsSL https://teloson.com/install.sh | bash -s -- TL-XXXX-XXXX-XXXX you@example.com
 #
 # This only works for a client the operators have already set up. It puts the desk in
 # ~/Teloson, installs Node beside it if the Mac has none, writes your signed mandate,
