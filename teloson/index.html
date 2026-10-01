@@ -7,8 +7,8 @@
 <meta name="description" content="Teloson builds private AI trading floors for one client at a time. Seventy-four agents on your own Mac, installed in one step, and nothing trades without your approval.">
 <meta property="og:title" content="Teloson">
 <meta property="og:description" content="A trading floor of your own. Installed on your Mac in one step. Nothing trades without your approval.">
-<meta property="og:image" content="https://jmweinst.github.io/teloson/assets/teloson-og.jpg">
-<meta property="og:url" content="https://jmweinst.github.io/teloson/">
+<meta property="og:image" content="https://teloson.com/assets/teloson-og.jpg">
+<meta property="og:url" content="https://teloson.com/">
 <meta name="theme-color" content="#1C2B45">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%231C2B45%22/%3E%3Cg transform=%22translate(6.3 6.5) scale(0.195)%22%3E%3Crect fill=%22%23FBFAF7%22 x=%220%22 y=%2217.99%22 width=%2215.4%22 height=%2240.95%22 rx=%227.7%22/%3E%3Crect fill=%22%23FBFAF7%22 x=%2228.01%22 y=%220%22 width=%2215.4%22 height=%2269.26%22 rx=%227.7%22/%3E%3Crect fill=%22%23FBFAF7%22 x=%2256.01%22 y=%227.06%22 width=%2215.4%22 height=%2258.31%22 rx=%227.7%22/%3E%3Crect fill=%22%238AA8D8%22 x=%2284.02%22 y=%228.44%22 width=%2215.4%22 height=%2272.54%22 rx=%227.7%22/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,7 +247,7 @@
       </div>
     </div>
     <div class="cmd" id="cmd">
-      <pre><span class="p">$</span> curl -fsSL https://jmweinst.github.io/teloson/install.sh | bash -s -- <span class="v">TL-XXXX-XXXX-XXXX</span> <span class="v">you@example.com</span></pre>
+      <pre><span class="p">$</span> curl -fsSL https://teloson.com/install.sh | bash -s -- <span class="v">TL-XXXX-XXXX-XXXX</span> <span class="v">you@example.com</span></pre>
       <button class="copy" id="copy" type="button" aria-label="Copy the install command"><span class="idle">Copy</span><span class="done">Copied</span></button>
     </div>
     <p class="footnote" style="margin-top:16px">Your code and email are filled in for you on the <a class="quiet" href="desk/">client page</a>. Running the same line again later updates the desk and keeps your settings and your data.</p>
@@ -369,7 +369,7 @@
 <script>
 (function(){
   /* ---------- copy the command ---------- */
-  var copy = document.getElementById("copy"), cmdText = "curl -fsSL https://jmweinst.github.io/teloson/install.sh | bash -s -- TL-XXXX-XXXX-XXXX you@example.com", copyTimer;
+  var copy = document.getElementById("copy"), cmdText = "curl -fsSL https://teloson.com/install.sh | bash -s -- TL-XXXX-XXXX-XXXX you@example.com", copyTimer;
   copy.addEventListener("click", function(){
     function did(){ copy.classList.add("is-done"); clearTimeout(copyTimer); copyTimer = setTimeout(function(){ copy.classList.remove("is-done"); }, 1600); }
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(cmdText).then(did, fallback); } else fallback();
