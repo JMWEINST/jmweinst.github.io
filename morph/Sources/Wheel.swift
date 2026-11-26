@@ -318,6 +318,14 @@ final class WheelView: NSView {
 
     private func drawCenter(_ ctx: CGContext, _ base: NSColor) {
         let r = WheelGeometry.centerRadius
+        if case .choosing = phase {
+            // A dark backing under the hairline gap between the centre and the first ring, so the
+            // real icon's name can't peek through it.
+            let back = WheelGeometry.ring1Inner + 1
+            ctx.addEllipse(in: CGRect(x: -back, y: -back, width: back * 2, height: back * 2))
+            ctx.setFillColor(NSColor(srgbRed: 0.02, green: 0.02, blue: 0.03, alpha: 1).cgColor)
+            ctx.fillPath()
+        }
         ctx.addEllipse(in: CGRect(x: -r, y: -r, width: r * 2, height: r * 2))
         ctx.setFillColor(base.withAlphaComponent(1).cgColor) // solid: it sits right on top of the real icon
         ctx.fillPath()
