@@ -79,7 +79,7 @@ To remove Morph: quit it from the menu bar and drag Morph from Applications to t
   original and saving a new file would make the icon jump to the next free spot.
 
 `build.sh` builds the app with nothing but Xcode's command-line tools. The GitHub Actions workflow
-builds it on macOS 14, 15 and 26, converts generated samples through every route above
+builds it on macOS 15 and 26, converts generated samples through every route above
 (`Morph --selftest`), then drives the real app on a live desktop: it clicks a file, clicks through
 the wheel, and checks that the file changed format and its icon did not move (`ci/e2e.sh`). A commit
 message containing `[dist]` makes the workflow commit the tested build to `dist/`, which is what

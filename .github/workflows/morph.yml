@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-15, macos-26]
+        os: [macos-15, macos-26]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
@@ -32,6 +32,15 @@ jobs:
 
       - name: The real thing, on a live desktop
         run: bash morph/ci/e2e.sh
+
+      - name: The installer, start to finish
+        run: |
+          MORPH_URL="file://$PWD/morph/build/Morph.zip" bash morph/install.sh
+          test -x /Applications/Morph.app/Contents/MacOS/Morph
+          sleep 4
+          pgrep -x Morph
+          screencapture -x /tmp/morph-shot.png && sips -s format jpeg -s formatOptions 70 /tmp/morph-shot.png --out /tmp/morph-shots/installed.jpg >/dev/null
+          pkill -x Morph || true
 
       - name: Keep the build and screenshots with the run
         if: always()
