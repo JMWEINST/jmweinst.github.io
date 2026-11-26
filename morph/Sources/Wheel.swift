@@ -3,7 +3,7 @@ import Cocoa
 /// Where everything in the wheel sits. Angles are in degrees, counter-clockwise from 3 o'clock,
 /// in a y-up space centred on the file. Shared by drawing, hit-testing and the tests.
 struct WheelGeometry {
-    static let centerRadius: CGFloat = 52
+    static let centerRadius: CGFloat = 56
     static let ring1Inner: CGFloat = 60, ring1Outer: CGFloat = 122
     static let ring2Inner: CGFloat = 129, ring2Outer: CGFloat = 194
     static let extent: CGFloat = 206
