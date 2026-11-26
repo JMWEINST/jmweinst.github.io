@@ -1,25 +1,59 @@
 name: Morph (Mac app)
 
+# Builds Morph on a real Mac, runs every conversion it knows, then drives the app on a live
+# desktop (click a file, click through the wheel, check the result). Put [dist] in a commit
+# message to have the tested build committed to morph/dist, which is what install.sh downloads.
+
 on:
   push:
     branches: ['claude/**', main]
-    paths: ['morph/**', '.github/workflows/morph.yml']
+    paths: ['morph/**', '!morph/dist/**', '!morph/ci/shots/**', '.github/workflows/morph.yml']
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  probe:
+  build-and-test:
     runs-on: macos-15
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-      - name: Probe the runner
-        run: bash morph/ci/probe.sh
-      - uses: actions/upload-artifact@v4
+
+      - name: Build
+        run: bash morph/build.sh
+
+      - name: Every conversion, on generated samples
+        run: morph/build/Morph.app/Contents/MacOS/Morph --selftest
+
+      - name: The real thing, on a live desktop
+        run: bash morph/ci/e2e.sh
+
+      - name: Keep the build and screenshots with the run
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: probe
-          path: /tmp/desk.jpg
+          name: morph
+          path: |
+            morph/build/Morph.zip
+            /tmp/morph-shots
           if-no-files-found: ignore
+
+      - name: Commit the tested build
+        if: always()
+        env:
+          MESSAGE: ${{ github.event.head_commit.message }}
+          OUTCOME: ${{ job.status }}
+        run: |
+          changed=0
+          if [[ "$MESSAGE" == *"[shots]"* ]] && ls /tmp/morph-shots/*.jpg >/dev/null 2>&1; then
+            mkdir -p morph/ci/shots && cp /tmp/morph-shots/*.jpg morph/ci/shots/ && git add morph/ci/shots && changed=1
+          fi
+          if [[ "$MESSAGE" == *"[dist]"* && "$OUTCOME" == "success" ]]; then
+            mkdir -p morph/dist && cp morph/build/Morph.zip morph/dist/Morph.zip && git add morph/dist && changed=1
+          fi
+          [ "$changed" = 1 ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Morph: tested build from $(git rev-parse --short HEAD)" || exit 0
+          git push origin "HEAD:${GITHUB_REF_NAME}"
