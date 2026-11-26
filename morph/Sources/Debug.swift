@@ -86,7 +86,7 @@ enum Debug {
         view.settle(open: open, hover: hover)
         let name = open.flatMap { g in format.flatMap { f in f < groups[g].formats.count ? groups[g].formats[f] : nil } } ?? "jpg"
         switch state {
-        case "working": view.phase = .working(name)
+        case "working": view.phase = .working(name); view.animate()
         case "done": view.phase = .done(name)
         case "failed": view.phase = .failed("This PDF has no selectable text (it looks like a scan), so there's nothing to turn into a document.")
         default: break
@@ -293,7 +293,13 @@ enum Debug {
         }
         try wav.write(to: path("seed.wav"))
 
-        var all = ["seed.txt", "seed.md", "seed.csv", "seed.json", "seed.wav", "seed.gif", "seed.png"].map(path)
+        try """
+        <svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120">
+          <rect width="240" height="120" fill="#2266cc"/><circle cx="120" cy="60" r="40" fill="#ff8844"/>
+        </svg>
+        """.write(to: path("seed.svg"), atomically: true, encoding: .utf8)
+
+        var all = ["seed.txt", "seed.md", "seed.csv", "seed.json", "seed.wav", "seed.gif", "seed.png", "seed.svg"].map(path)
 
         // A movie with both picture and sound, built from the GIF and the tone.
         do {

@@ -57,6 +57,8 @@ jobs:
             mkdir -p morph/dist && cp morph/build/Morph.zip morph/dist/Morph.zip && git add morph/dist && changed=1
           fi
           [ "$changed" = 1 ] || exit 0
+          git fetch -q origin "$GITHUB_REF_NAME"
+          if [ "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA" ]; then echo "The branch has moved on; a newer run will publish."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Morph: tested build from $(git rev-parse --short HEAD)" || exit 0

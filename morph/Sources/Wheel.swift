@@ -94,6 +94,8 @@ final class WheelView: NSView {
     var hover: WheelGeometry.Target?
     var onPick: ((String) -> Void)?
     var onDismiss: (() -> Void)?
+    /// While converting, the window shrinks to just the centre disc, so there's no backdrop to dim.
+    var compact = false { didSet { needsDisplay = true } }
 
     private var appear: CGFloat = 0
     private var fanOut: CGFloat = 0
@@ -247,8 +249,10 @@ final class WheelView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         guard let ctx = NSGraphicsContext.current?.cgContext else { return }
         let shown = eased(appear)
-        ctx.setFillColor(NSColor.black.withAlphaComponent(0.18 * shown).cgColor)
-        ctx.fill(bounds)
+        if !compact {
+            ctx.setFillColor(NSColor.black.withAlphaComponent(0.18 * shown).cgColor)
+            ctx.fill(bounds)
+        }
 
         ctx.saveGState()
         ctx.translateBy(x: center.x, y: center.y)
@@ -376,6 +380,8 @@ final class WheelController {
     private var panel: WheelPanel?
     private(set) var view: WheelView?
     private var outsideClicks: Any?
+    private var fullFrame = NSRect.zero
+    private var fullCenter = CGPoint.zero
 
     var isVisible: Bool { panel != nil }
     /// Tests hook in here to learn how a conversion ended.
@@ -420,6 +426,8 @@ final class WheelController {
         let view = WheelView(frame: NSRect(origin: .zero, size: bounds.size), file: hit.url,
                              groups: Formats.groups(for: hit.url))
         view.center = CGPoint(x: anchor.x - bounds.minX, y: anchor.y - bounds.minY)
+        fullFrame = bounds
+        fullCenter = view.center
         view.onDismiss = { [weak self] in self?.dismiss() }
         view.onPick = { [weak self] format in self?.pick(format) }
         panel.contentView = view
@@ -443,9 +451,32 @@ final class WheelController {
         view = nil
     }
 
+    /// While a conversion runs, the full-screen wheel gets out of the way: the window shrinks to the
+    /// centre disc, lets clicks through and drops below system dialogs. macOS may be asking "allow
+    /// Morph to access your Desktop folder?" at this very moment, and that has to stay clickable.
+    private func setCompact(_ on: Bool) {
+        guard let panel = panel, let view = view else { return }
+        view.compact = on
+        panel.ignoresMouseEvents = on
+        panel.level = on ? .floating : .popUpMenu
+        if on {
+            let side = (WheelGeometry.centerRadius + 26) * 2
+            let origin = CGPoint(x: fullFrame.minX + fullCenter.x - side / 2, y: fullFrame.minY + fullCenter.y - side / 2)
+            panel.setFrame(NSRect(origin: origin, size: CGSize(width: side, height: side)), display: false)
+            view.frame = NSRect(x: 0, y: 0, width: side, height: side)
+            view.center = CGPoint(x: side / 2, y: side / 2)
+        } else {
+            panel.setFrame(fullFrame, display: false)
+            view.frame = NSRect(origin: .zero, size: fullFrame.size)
+            view.center = fullCenter
+        }
+        view.needsDisplay = true
+    }
+
     func pick(_ format: String) {
         guard let view = view else { return }
         view.phase = .working(format)
+        setCompact(true)
         view.animate()
         let source = view.fileURL
 
@@ -459,6 +490,7 @@ final class WheelController {
                         if let view = view, self?.view === view { self?.dismiss() }
                     }
                 case .failure(let error):
+                    self.setCompact(false) // back to full size: the explanation needs room, and a click dismisses it
                     view.phase = .failed(error.localizedDescription)
                 }
             }
