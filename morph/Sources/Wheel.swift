@@ -262,7 +262,7 @@ final class WheelView: NSView {
         ctx.setShadow(offset: CGSize(width: 0, height: -3), blur: 18, color: NSColor.black.withAlphaComponent(0.40).cgColor)
         ctx.beginTransparencyLayer(auxiliaryInfo: nil)
 
-        let base = NSColor(srgbRed: 0.09, green: 0.09, blue: 0.11, alpha: 0.90)
+        let base = NSColor(srgbRed: 0.09, green: 0.09, blue: 0.11, alpha: 0.97)
         if case .choosing = phase {
             drawGroups(ctx, base)
             drawFormats(ctx, base)
