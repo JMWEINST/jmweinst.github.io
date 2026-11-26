@@ -14,9 +14,9 @@ center() { "$BIN" --find "$1" | awk '/^CENTER/ {print $2, $3; exit}'; }
 wait_for() { for _ in $(seq 1 40); do [ -e "$1" ] && return 0; sleep 0.25; done; return 1; }
 # through_wheel <file> <cx> <cy> <category> <format> <shot prefix>
 through_wheel() {
-  "$BIN" --click "$2" "$3" trigger; sleep 1; shot "$6-1-wheel"
   local pts; pts="$("$BIN" --layout "$1" "$2" "$3" "$4" "$5")"; echo "$pts"
   local g f; g="$(echo "$pts" | awk '/^GROUP/ {print $2, $3}')"; f="$(echo "$pts" | awk '/^FORMAT/ {print $2, $3}')"
+  "$BIN" --click "$2" "$3" trigger; sleep 1; shot "$6-1-wheel"
   # shellcheck disable=SC2086
   "$BIN" --click $g; sleep 0.6
   # shellcheck disable=SC2086
@@ -78,7 +78,6 @@ finder 'set current view of front Finder window to column view' >/dev/null; slee
 "$BIN" --find "Meeting Notes.txt"; check "column view resolves" "[ $? -eq 0 ]"
 finder 'set current view of front Finder window to list view' >/dev/null; sleep 2
 "$BIN" --find "Meeting Notes.txt"; check "list view resolves" "[ $? -eq 0 ]"
-"$BIN" --dump 9 | grep -v AXMenu | head -80
 
 read -r LX LY <<<"$(center "Meeting Notes.txt")"
 through_wheel "$DIR/Meeting Notes.txt" "$LX" "$LY" Document pdf window

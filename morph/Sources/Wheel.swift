@@ -235,9 +235,9 @@ final class WheelView: NSView {
         s.draw(at: CGPoint(x: p.x - box.width / 2, y: p.y - box.height / 2))
     }
 
-    private func symbol(_ name: String, size: CGFloat, color: NSColor, centeredAt p: CGPoint) {
+    private func symbol(_ name: String, size: CGFloat, colors: [NSColor], centeredAt p: CGPoint) {
         let config = NSImage.SymbolConfiguration(pointSize: size, weight: .medium)
-            .applying(NSImage.SymbolConfiguration(paletteColors: [color]))
+            .applying(NSImage.SymbolConfiguration(paletteColors: colors))
         guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
             .withSymbolConfiguration(config) else { return }
         let box = image.size
@@ -283,7 +283,7 @@ final class WheelView: NSView {
                 : isHover ? group.category.color.withAlphaComponent(0.55) : base
             fill(ctx, path, color)
             let p = WheelGeometry.offset(angle: geometry.groupAngle(i), radius: mid)
-            symbol(group.category.symbol, size: 17, color: .white, centeredAt: CGPoint(x: p.x, y: p.y + 8))
+            symbol(group.category.symbol, size: 17, colors: [.white], centeredAt: CGPoint(x: p.x, y: p.y + 8))
             text(group.category.title, size: 10.5, weight: .semibold,
                  color: NSColor.white.withAlphaComponent(isOpen || isHover ? 1 : 0.86),
                  centeredAt: CGPoint(x: p.x, y: p.y - 12))
@@ -315,7 +315,7 @@ final class WheelView: NSView {
     private func drawCenter(_ ctx: CGContext, _ base: NSColor) {
         let r = WheelGeometry.centerRadius
         ctx.addEllipse(in: CGRect(x: -r, y: -r, width: r * 2, height: r * 2))
-        ctx.setFillColor(base.cgColor)
+        ctx.setFillColor(base.withAlphaComponent(1).cgColor) // solid: it sits right on top of the real icon
         ctx.fillPath()
         ctx.addEllipse(in: CGRect(x: -r, y: -r, width: r * 2, height: r * 2))
         ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.12).cgColor)
@@ -339,11 +339,12 @@ final class WheelView: NSView {
             ctx.setLineCap(.round)
             ctx.strokePath()
         case .done(let format):
-            symbol("checkmark.circle.fill", size: 34, color: NSColor(srgbRed: 0.25, green: 0.84, blue: 0.47, alpha: 1),
-                   centeredAt: CGPoint(x: 0, y: 8))
+            symbol("checkmark.circle.fill", size: 34,
+                   colors: [.white, NSColor(srgbRed: 0.20, green: 0.78, blue: 0.42, alpha: 1)], centeredAt: CGPoint(x: 0, y: 8))
             text(format.uppercased(), size: 11, weight: .bold, centeredAt: CGPoint(x: 0, y: -27))
         case .failed:
-            symbol("exclamationmark.triangle.fill", size: 30, color: NSColor(srgbRed: 1, green: 0.78, blue: 0.20, alpha: 1),
+            symbol("exclamationmark.triangle.fill", size: 30,
+                   colors: [NSColor(srgbRed: 0.15, green: 0.12, blue: 0.05, alpha: 1), NSColor(srgbRed: 1, green: 0.78, blue: 0.20, alpha: 1)],
                    centeredAt: CGPoint(x: 0, y: 8))
             text("Not converted", size: 10, weight: .semibold, color: quiet, centeredAt: CGPoint(x: 0, y: -27))
         }
@@ -380,9 +381,9 @@ final class WheelController {
     /// Tests hook in here to learn how a conversion ended.
     var onFinished: ((Result<URL, Error>) -> Void)?
 
+    /// Which display the wheel goes on and where its centre lands (AppKit coordinates, origin bottom-left).
     /// `point` and the hit's frame use the pointer's coordinates: origin at the top-left of the main display.
-    func show(_ hit: FileHit, at point: CGPoint) {
-        dismiss()
+    static func placement(for hit: FileHit, at point: CGPoint) -> (screen: NSScreen, anchor: CGPoint)? {
         let mainHeight = NSScreen.screens.first?.frame.height ?? 0
         func cocoa(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x, y: mainHeight - p.y) }
 
@@ -391,11 +392,19 @@ final class WheelController {
         if let frame = hit.frame, frame.width <= 160, frame.height <= 160 {
             anchor = cocoa(CGPoint(x: frame.midX, y: frame.midY))
         }
-        guard let screen = NSScreen.screens.first(where: { $0.frame.contains(anchor) }) ?? NSScreen.main else { return }
-        let bounds = screen.frame
+        guard let screen = NSScreen.screens.first(where: { $0.frame.contains(anchor) }) ?? NSScreen.main else { return nil }
+        // Keep the whole wheel on screen and clear of the menu bar and Dock.
+        let usable = screen.visibleFrame
         let margin = WheelGeometry.extent
-        if bounds.width > margin * 2 { anchor.x = min(max(anchor.x, bounds.minX + margin), bounds.maxX - margin) }
-        if bounds.height > margin * 2 { anchor.y = min(max(anchor.y, bounds.minY + margin), bounds.maxY - margin) }
+        if usable.width > margin * 2 { anchor.x = min(max(anchor.x, usable.minX + margin), usable.maxX - margin) }
+        if usable.height > margin * 2 { anchor.y = min(max(anchor.y, usable.minY + margin), usable.maxY - margin) }
+        return (screen, anchor)
+    }
+
+    func show(_ hit: FileHit, at point: CGPoint) {
+        dismiss()
+        guard let (screen, anchor) = WheelController.placement(for: hit, at: point) else { return }
+        let bounds = screen.frame
 
         let panel = WheelPanel(contentRect: bounds, styleMask: [.borderless, .nonactivatingPanel],
                                backing: .buffered, defer: false)

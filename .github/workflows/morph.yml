@@ -15,7 +15,11 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -33,14 +37,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: morph
+          name: morph-${{ matrix.os }}
           path: |
             morph/build/Morph.zip
             /tmp/morph-shots
           if-no-files-found: ignore
 
       - name: Commit the tested build
-        if: always()
+        if: always() && matrix.os == 'macos-15'
         env:
           MESSAGE: ${{ github.event.head_commit.message }}
           OUTCOME: ${{ job.status }}

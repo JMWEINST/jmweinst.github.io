@@ -133,8 +133,11 @@ enum Debug {
             print("FOUND \(role) \(frame)")
             print("CENTER \(Int(frame.midX)) \(Int(frame.midY))")
             var points = [("centre", CGPoint(x: frame.midX, y: frame.midY))]
-            if frame.width <= 160 { points.append(("name", CGPoint(x: frame.midX, y: frame.maxY + 14))) }
-            if frame.width > 160 { points.append(("far right", CGPoint(x: frame.maxX - 30, y: frame.midY))) }
+            if role == "AXImage" {
+                points.append(("name under icon", CGPoint(x: frame.midX, y: frame.maxY + 14)))
+            } else {
+                points.append(("small icon beside name", CGPoint(x: frame.minX - 12, y: frame.midY)))
+            }
             for (label, point) in points {
                 let hit = FinderProbe.file(at: point)
                 let ok = hit?.url.lastPathComponent == name
@@ -159,11 +162,19 @@ enum Debug {
         post(.leftMouseUp, pause: 150_000)
     }
 
-    /// Screen points for a category and one of its formats, for a wheel centred at `center`.
-    static func layout(file: URL, center: CGPoint, category: String, format: String) -> Int32 {
+    /// Where on screen to click for a category and one of its formats, if the wheel were opened by
+    /// clicking `file` at `point`. Ask before opening the wheel: once it's up, it covers Finder.
+    static func layout(file: URL, center point: CGPoint, category: String, format: String) -> Int32 {
         let groups = Formats.groups(for: file)
         guard let g = groups.firstIndex(where: { $0.category.title == category }),
               let f = groups[g].formats.firstIndex(of: format) else { print("no such target"); return 1 }
+        _ = NSApplication.shared
+        guard let hit = FinderProbe.file(at: point), let place = WheelController.placement(for: hit, at: point) else {
+            print("no file at that point")
+            return 1
+        }
+        let mainHeight = NSScreen.screens.first?.frame.height ?? 0
+        let center = CGPoint(x: place.anchor.x, y: mainHeight - place.anchor.y)
         let geometry = WheelGeometry(groupCount: groups.count)
         let a = WheelGeometry.offset(angle: geometry.groupAngle(g),
                                      radius: (WheelGeometry.ring1Inner + WheelGeometry.ring1Outer) / 2)
